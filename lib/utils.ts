@@ -36,3 +36,10 @@ export function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2)
 }
+
+export function generateInvoiceNumber(existingCount: number): string {
+  const year = new Date().getFullYear()
+  const num = String(existingCount + 1).padStart(3, '0')
+
+  return `EHQ-${year}-${num}`
+}
