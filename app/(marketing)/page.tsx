@@ -1,953 +1,472 @@
+'use client'
+
+import Link from 'next/link'
 import { WaitlistForm } from './_components/WaitlistForm'
+import { FAQ } from './_components/FAQ'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+
+const problems = [
+  {
+    emoji: '📧',
+    title: 'Deal terms buried in 47 emails',
+    desc: "Brand reaches out in March. You negotiate for two weeks. The final rate, deliverable count, and usage rights are scattered across a thread you'll never find when you need them.",
+  },
+  {
+    emoji: '📊',
+    title: "A Google Sheet that's 3 months out of date",
+    desc: "You set it up with good intentions. Now it's a graveyard of stale deal statuses, missing payment dates, and brands you forgot you were still contracted with.",
+  },
+  {
+    emoji: '💸',
+    title: 'Invoices you forgot to send',
+    desc: 'You went live. The brand loved it. You got busy making the next video. Six weeks later you realise nobody paid you — because you never sent an invoice.',
+  },
+  {
+    emoji: '⏰',
+    title: 'Deliverable deadlines you almost missed',
+    desc: 'The integration date was in the contract. The contract was in an email. The email got buried. Your brand contact is now sending a polite-but-panicked follow-up.',
+  },
+]
+
+const steps = [
+  {
+    emoji: '📥',
+    title: 'Connect Gmail',
+    desc: 'One-click OAuth. EarnHQ gets read-only access to your inbox — nothing is stored, nothing is sent on your behalf. Takes 30 seconds.',
+    detail: 'Read-only · No data stored',
+  },
+  {
+    emoji: '🤖',
+    title: 'AI Reads Your Deals',
+    desc: 'GPT-4o scans your sponsor threads and automatically extracts brand name, deal value, deliverables, deadlines, and platform. You review and confirm.',
+    detail: 'Powered by GPT-4o-mini',
+  },
+  {
+    emoji: '⚡',
+    title: 'Run Your Pipeline',
+    desc: 'Track every deal from negotiating to paid. Send a branded invoice in one click. Get deadline reminders. Know exactly who owes you money — and how much.',
+    detail: 'Invoice → Track → Get paid',
+  },
+]
+
+const features = [
+  { emoji: '📥', title: 'Smart Gmail Parsing', desc: 'AI scans your inbox for sponsorship threads and pulls out every deal detail automatically. Review once, save forever.' },
+  { emoji: '🗂️', title: 'Deal Pipeline', desc: 'A clean board that takes every deal from Negotiating → Contracted → In Production → Live → Invoiced → Paid. One source of truth.' },
+  { emoji: '📄', title: 'One-Click Invoices', desc: 'Professional, branded PDF invoices generated from your deal data. Send in one click. Looks like you have an accountant.' },
+  { emoji: '💳', title: 'Payment Tracking', desc: 'Always know what\'s outstanding and what\'s cleared. Never forget to follow up on an overdue invoice again.' },
+  { emoji: '💰', title: 'Rate Card Builder', desc: 'Build your standard pricing by platform and format. Share a clean rate card with any brand in seconds — no more "what do you charge?" back-and-forth.' },
+  { emoji: '🔔', title: 'Deliverable Reminders', desc: 'Automatic reminders before every deadline. Never get a "where\'s the video?" email from a brand again.' },
+]
+
+const testimonials = [
+  {
+    quote: "I've been living in a Google Sheet for 2 years. The Gmail parser found 11 active deals I had half-forgotten about. This is exactly what I needed.",
+    name: 'Jamie K.',
+    handle: 'YouTube Creator · 280k subscribers',
+    initials: 'JK',
+    gradient: 'from-primary to-purple-500',
+  },
+  {
+    quote: "I run about 8 podcast sponsorships a month. Tracking them was a mess. EarnHQ's pipeline view makes me feel like I actually have a business now.",
+    name: 'Marcus R.',
+    handle: 'Podcast Host · 120k listeners',
+    initials: 'MR',
+    gradient: 'from-success to-blue-500',
+  },
+  {
+    quote: 'Sent my first EarnHQ invoice in 40 seconds. My old process was copy a Google Doc, edit it, export PDF, attach it to email. This is embarrassingly better.',
+    name: 'Sophia L.',
+    handle: 'Newsletter Creator · 45k subscribers',
+    initials: 'SL',
+    gradient: 'from-warning to-error',
+  },
+]
+
+const pricingPlans = [
+  {
+    name: 'Free',
+    price: '$0',
+    period: '/ month',
+    desc: 'Perfect for getting started and testing the waters.',
+    features: ['3 active deals', 'Basic deal pipeline', 'Manual deal entry'],
+    disabledFeatures: ['Gmail sync & AI parsing', 'Invoice generation', 'Payment tracking'],
+    featured: false,
+  },
+  {
+    name: 'Pro',
+    price: '$29',
+    period: '/ month',
+    desc: 'For the solo creator running a real brand deal business.',
+    features: ['Unlimited active deals', 'Gmail sync & AI parsing', 'Professional invoice generation', 'Payment tracking & reminders', 'Rate card builder', 'Deliverable deadline alerts'],
+    disabledFeatures: [],
+    featured: true,
+  },
+  {
+    name: 'Agency',
+    price: '$99',
+    period: '/ month',
+    desc: 'For managers running deals across multiple creator accounts.',
+    features: ['Everything in Pro', 'Multi-creator accounts', 'White-label invoices', 'Team access', 'Priority support', 'Custom branding'],
+    disabledFeatures: [],
+    featured: false,
+  },
+]
+
+const dealCards = [
+  { brand: 'NordVPN', initials: 'NR', meta: 'YouTube Integration · Due Jun 3', amount: '$4,500', status: 'In Production', statusClass: 'bg-warning/15 text-warning' },
+  { brand: 'Squarespace', initials: 'SQ', meta: 'Newsletter · 3 issues', amount: '$2,200', status: 'Contracted', statusClass: 'bg-blue-500/15 text-blue-400' },
+  { brand: 'Athletic Greens', initials: 'AG', meta: 'Podcast · 2 episodes', amount: '$3,000', status: 'Invoiced', statusClass: 'bg-purple-500/15 text-purple-400' },
+  { brand: 'Hostinger', initials: 'HS', meta: 'YouTube Dedicated · Paid May 12', amount: '$5,000', status: 'Paid', statusClass: 'bg-success/15 text-success' },
+]
 
 export default function HomePage() {
   return (
-    <>
-      <style>{`
-        /* ─── Reset & Base ─────────────────────────────────── */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        .lp-root {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          background: #0A0A0A;
-          color: #FAFAFA;
-          line-height: 1.6;
-          overflow-x: hidden;
-        }
-
-        /* ─── Animations ───────────────────────────────────── */
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50%       { transform: translateY(-10px); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
-          50%       { box-shadow: 0 0 0 8px rgba(99,102,241,0); }
-        }
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
-
-        .fade-up-1 { animation: fadeUp 0.7s ease both 0.1s; }
-        .fade-up-2 { animation: fadeUp 0.7s ease both 0.25s; }
-        .fade-up-3 { animation: fadeUp 0.7s ease both 0.4s; }
-        .fade-up-4 { animation: fadeUp 0.7s ease both 0.55s; }
-
-        .float-anim { animation: float 3s ease-in-out infinite; }
-
-        /* ─── Waitlist form (shared) ───────────────────────── */
-        .waitlist-form-inline,
-        .waitlist-form-card {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          align-items: center;
-        }
-        .waitlist-form-card { flex-direction: column; align-items: stretch; }
-
-        .waitlist-input {
-          flex: 1;
-          min-width: 220px;
-          background: #111111;
-          border: 1px solid #333;
-          color: #FAFAFA;
-          padding: 12px 16px;
-          border-radius: 8px;
-          font-size: 15px;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-        .waitlist-input:focus { border-color: #6366F1; }
-        .waitlist-input::placeholder { color: #71717A; }
-
-        .waitlist-btn-primary {
-          background: #6366F1;
-          color: #fff;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 15px;
-          font-weight: 600;
-          cursor: pointer;
-          white-space: nowrap;
-          transition: background 0.2s, transform 0.1s;
-        }
-        .waitlist-btn-primary:hover { background: #5254CC; }
-        .waitlist-btn-primary:active { transform: scale(0.98); }
-        .waitlist-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .waitlist-btn-pulse { animation: pulse-glow 2.5s ease-in-out infinite; }
-        .waitlist-btn-pulse:hover { animation: none; }
-
-        .waitlist-error { color: #EF4444; font-size: 13px; width: 100%; }
-
-        .waitlist-success {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-        .waitlist-success .success-icon { font-size: 28px; }
-        .waitlist-success p { font-size: 16px; font-weight: 500; }
-        .waitlist-success .success-sub { font-size: 13px; color: #71717A; }
-
-        /* ─── NAV ──────────────────────────────────────────── */
-        .lp-nav {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 20px 40px;
-          border-bottom: 1px solid #1A1A1A;
-          position: sticky;
-          top: 0;
-          background: rgba(10,10,10,0.9);
-          backdrop-filter: blur(12px);
-          z-index: 100;
-        }
-        .lp-wordmark {
-          font-size: 20px;
-          font-weight: 800;
-          letter-spacing: -0.5px;
-          color: #FAFAFA;
-          text-decoration: none;
-        }
-        .lp-wordmark span { color: #6366F1; }
-        .lp-nav-actions { display: flex; gap: 12px; align-items: center; }
-        .nav-link {
-          color: #71717A;
-          text-decoration: none;
-          font-size: 14px;
-          padding: 8px 12px;
-          border-radius: 6px;
-          transition: color 0.2s;
-        }
-        .nav-link:hover { color: #FAFAFA; }
-        .nav-cta {
-          background: #6366F1;
-          color: #fff;
-          text-decoration: none;
-          font-size: 14px;
-          font-weight: 600;
-          padding: 8px 16px;
-          border-radius: 6px;
-          transition: background 0.2s;
-        }
-        .nav-cta:hover { background: #5254CC; }
-
-        /* ─── HERO ─────────────────────────────────────────── */
-        .lp-hero {
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 100px 40px 80px;
-          text-align: center;
-        }
-        .hero-badge {
-          display: inline-block;
-          background: rgba(99,102,241,0.12);
-          border: 1px solid rgba(99,102,241,0.3);
-          color: #A5B4FC;
-          font-size: 13px;
-          padding: 5px 14px;
-          border-radius: 100px;
-          margin-bottom: 28px;
-        }
-        .hero-h1 {
-          font-size: clamp(44px, 7vw, 80px);
-          font-weight: 900;
-          letter-spacing: -2px;
-          line-height: 1.05;
-          margin-bottom: 24px;
-          background: linear-gradient(135deg, #FAFAFA 0%, #A1A1AA 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .hero-h1 .brand-word { -webkit-text-fill-color: #6366F1; background: none; }
-        .hero-sub {
-          font-size: clamp(16px, 2.5vw, 20px);
-          color: #71717A;
-          max-width: 560px;
-          margin: 0 auto 40px;
-          line-height: 1.7;
-        }
-        .hero-actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          justify-content: center;
-          margin-bottom: 60px;
-        }
-        .btn-primary {
-          background: #6366F1;
-          color: #fff;
-          text-decoration: none;
-          padding: 14px 28px;
-          border-radius: 10px;
-          font-size: 16px;
-          font-weight: 700;
-          transition: background 0.2s, transform 0.1s;
-          animation: pulse-glow 2.5s ease-in-out infinite;
-        }
-        .btn-primary:hover { background: #5254CC; animation: none; }
-        .btn-secondary {
-          background: transparent;
-          border: 1px solid #333;
-          color: #FAFAFA;
-          text-decoration: none;
-          padding: 14px 28px;
-          border-radius: 10px;
-          font-size: 16px;
-          font-weight: 600;
-          transition: border-color 0.2s;
-        }
-        .btn-secondary:hover { border-color: #6366F1; }
-
-        .hero-platforms {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          justify-content: center;
-          align-items: center;
-          color: #71717A;
-          font-size: 13px;
-        }
-        .hero-platforms span { color: #444; }
-        .platform-pill {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: #111111;
-          border: 1px solid #222;
-          padding: 6px 14px;
-          border-radius: 100px;
-          font-size: 13px;
-          color: #A1A1AA;
-        }
-
-        /* ─── PROBLEM ──────────────────────────────────────── */
-        .lp-section { padding: 100px 40px; }
-        .lp-section-inner { max-width: 1100px; margin: 0 auto; }
-        .section-label {
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: #6366F1;
-          margin-bottom: 16px;
-        }
-        .section-h2 {
-          font-size: clamp(28px, 4vw, 48px);
-          font-weight: 800;
-          letter-spacing: -1px;
-          line-height: 1.15;
-          margin-bottom: 16px;
-        }
-        .section-sub {
-          font-size: 17px;
-          color: #71717A;
-          max-width: 520px;
-          line-height: 1.7;
-        }
-
-        .problem-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 60px;
-          align-items: center;
-        }
-        .problem-stats { display: flex; flex-direction: column; gap: 32px; }
-        .stat-item {}
-        .stat-number {
-          font-size: 52px;
-          font-weight: 900;
-          letter-spacing: -2px;
-          color: #6366F1;
-          line-height: 1;
-          margin-bottom: 8px;
-        }
-        .stat-desc { color: #A1A1AA; font-size: 15px; line-height: 1.5; }
-
-        /* Chaotic desk SVG illustration */
-        .problem-visual {
-          background: #111111;
-          border: 1px solid #222;
-          border-radius: 16px;
-          padding: 32px;
-          aspect-ratio: 4/3;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          overflow: hidden;
-        }
-        .chaos-items {
-          width: 100%;
-          height: 100%;
-          position: relative;
-        }
-        .chaos-card {
-          position: absolute;
-          background: #1A1A1A;
-          border: 1px solid #2A2A2A;
-          border-radius: 8px;
-          padding: 10px 14px;
-          font-size: 12px;
-          color: #71717A;
-          white-space: nowrap;
-        }
-        .chaos-card.red { border-color: #EF444433; color: #EF4444; }
-        .chaos-card.yellow { border-color: #F59E0B33; color: #F59E0B; }
-
-        /* ─── SOLUTION ─────────────────────────────────────── */
-        .solution-bg { background: #0D0D0D; }
-
-        .feature-cards {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-top: 60px;
-        }
-        .feature-card {
-          background: #111111;
-          border: 1px solid #222;
-          border-radius: 16px;
-          padding: 32px 28px;
-          transition: border-color 0.2s, transform 0.2s;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s;
-        }
-        .feature-card.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .feature-card:hover { border-color: #6366F1; }
-        .feature-num {
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 2px;
-          color: #6366F1;
-          margin-bottom: 16px;
-        }
-        .feature-icon {
-          font-size: 32px;
-          margin-bottom: 16px;
-          display: block;
-        }
-        .feature-title {
-          font-size: 20px;
-          font-weight: 700;
-          margin-bottom: 12px;
-          letter-spacing: -0.3px;
-        }
-        .feature-desc { color: #71717A; font-size: 15px; line-height: 1.65; }
-
-        /* ─── DASHBOARD MOCKUP ─────────────────────────────── */
-        .dashboard-section { background: #080808; }
-        .dashboard-wrap {
-          max-width: 900px;
-          margin: 60px auto 0;
-        }
-        .dashboard-mockup {
-          background: #111111;
-          border: 1px solid #2A2A2A;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 0 60px rgba(99,102,241,0.08), 0 0 0 1px #1A1A1A;
-        }
-        .mock-titlebar {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 12px 16px;
-          background: #0D0D0D;
-          border-bottom: 1px solid #1E1E1E;
-        }
-        .mock-dot {
-          width: 12px; height: 12px;
-          border-radius: 50%;
-        }
-        .mock-dot-r { background: #EF4444; }
-        .mock-dot-y { background: #F59E0B; }
-        .mock-dot-g { background: #22C55E; }
-        .mock-url {
-          flex: 1;
-          background: #1A1A1A;
-          border-radius: 6px;
-          padding: 5px 12px;
-          font-size: 12px;
-          color: #555;
-          text-align: center;
-        }
-
-        .mock-nav {
-          display: flex;
-          align-items: center;
-          gap: 0;
-          padding: 0 24px;
-          border-bottom: 1px solid #1E1E1E;
-          background: #0D0D0D;
-        }
-        .mock-nav-brand {
-          font-size: 14px;
-          font-weight: 800;
-          color: #6366F1;
-          padding: 14px 0;
-          margin-right: 24px;
-        }
-        .mock-nav-item {
-          font-size: 13px;
-          color: #555;
-          padding: 14px 16px;
-          cursor: default;
-          border-bottom: 2px solid transparent;
-        }
-        .mock-nav-item.active { color: #FAFAFA; border-bottom-color: #6366F1; }
-
-        .mock-body { padding: 24px; }
-
-        .mock-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-        .mock-stat {
-          background: #0D0D0D;
-          border: 1px solid #1E1E1E;
-          border-radius: 10px;
-          padding: 16px;
-        }
-        .mock-stat-label { font-size: 11px; color: #555; margin-bottom: 6px; }
-        .mock-stat-value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-        .mock-stat-value.green { color: #22C55E; }
-        .mock-stat-value.yellow { color: #F59E0B; }
-
-        .mock-filters {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 20px;
-          flex-wrap: wrap;
-        }
-        .mock-filter-chip {
-          padding: 5px 12px;
-          border-radius: 100px;
-          font-size: 11px;
-          font-weight: 600;
-          border: 1px solid transparent;
-        }
-        .chip-negotiating { background: rgba(99,102,241,0.12); color: #6366F1; border-color: rgba(99,102,241,0.3); }
-        .chip-contracted  { background: rgba(59,130,246,0.12); color: #3B82F6; border-color: rgba(59,130,246,0.3); }
-        .chip-live        { background: rgba(34,197,94,0.12);  color: #22C55E; border-color: rgba(34,197,94,0.3); }
-        .chip-invoiced    { background: rgba(168,85,247,0.12); color: #A855F7; border-color: rgba(168,85,247,0.3); }
-        .chip-paid        { background: rgba(16,185,129,0.12); color: #10B981; border-color: rgba(16,185,129,0.3); }
-
-        .mock-deals {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-        }
-        .mock-deal-card {
-          background: #0D0D0D;
-          border: 1px solid #1E1E1E;
-          border-radius: 10px;
-          padding: 14px;
-        }
-        .mock-deal-brand { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .mock-deal-amount { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-        .mock-deal-status {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          font-size: 11px;
-          color: #71717A;
-        }
-        .mock-deal-status .dot {
-          width: 6px; height: 6px;
-          border-radius: 50%;
-          background: #22C55E;
-        }
-        .mock-deal-status .dot.yellow { background: #F59E0B; }
-        .mock-deal-status .dot.blue { background: #3B82F6; }
-
-        /* ─── PRICING ──────────────────────────────────────── */
-        .pricing-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-top: 60px;
-        }
-        .pricing-card {
-          background: #111111;
-          border: 1px solid #222;
-          border-radius: 16px;
-          padding: 32px 28px;
-          display: flex;
-          flex-direction: column;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .pricing-card.visible { opacity: 1; transform: translateY(0); }
-        .pricing-card.featured {
-          border-color: #6366F1;
-          background: linear-gradient(160deg, #111111 0%, #13113A 100%);
-        }
-        .pricing-badge {
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          color: #6366F1;
-          margin-bottom: 16px;
-          display: block;
-        }
-        .pricing-name {
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: -0.5px;
-          margin-bottom: 8px;
-        }
-        .pricing-price {
-          font-size: 44px;
-          font-weight: 900;
-          letter-spacing: -2px;
-          line-height: 1;
-          margin-bottom: 4px;
-        }
-        .pricing-period { font-size: 13px; color: #71717A; margin-bottom: 28px; }
-        .pricing-features { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-        .pricing-feature { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #A1A1AA; }
-        .pricing-feature::before { content: '✓'; color: #22C55E; font-weight: 700; flex-shrink: 0; }
-        .pricing-btn {
-          display: block;
-          text-align: center;
-          padding: 12px;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 600;
-          text-decoration: none;
-          transition: background 0.2s, border-color 0.2s;
-          border: 1px solid #333;
-          color: #A1A1AA;
-        }
-        .pricing-card.featured .pricing-btn {
-          background: #6366F1;
-          color: #fff;
-          border-color: #6366F1;
-        }
-        .pricing-card.featured .pricing-btn:hover { background: #5254CC; }
-        .pricing-btn:hover { border-color: #6366F1; color: #FAFAFA; }
-
-        /* ─── TESTIMONIALS ─────────────────────────────────── */
-        .testimonials-bg { background: #0D0D0D; }
-        .testimonials-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-top: 60px;
-        }
-        .testimonial-card {
-          background: #111111;
-          border: 1px solid #222;
-          border-radius: 16px;
-          padding: 28px;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .testimonial-card.visible { opacity: 1; transform: translateY(0); }
-        .testimonial-quote {
-          font-size: 15px;
-          color: #D4D4D8;
-          line-height: 1.7;
-          margin-bottom: 20px;
-        }
-        .testimonial-quote::before { content: '"'; font-size: 32px; color: #6366F1; line-height: 0; vertical-align: -12px; margin-right: 4px; }
-        .testimonial-author { display: flex; align-items: center; gap: 12px; }
-        .testimonial-avatar {
-          width: 40px; height: 40px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #6366F1, #A855F7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 14px;
-          font-weight: 700;
-          color: #fff;
-          flex-shrink: 0;
-        }
-        .testimonial-handle { font-size: 13px; font-weight: 600; }
-        .testimonial-meta { font-size: 12px; color: #71717A; }
-
-        /* ─── FINAL CTA ────────────────────────────────────── */
-        .cta-section {
-          text-align: center;
-          background: #0A0A0A;
-          border-top: 1px solid #1A1A1A;
-        }
-        .cta-inner { max-width: 640px; margin: 0 auto; }
-        .cta-h2 {
-          font-size: clamp(28px, 4vw, 48px);
-          font-weight: 900;
-          letter-spacing: -1.5px;
-          margin-bottom: 16px;
-        }
-        .cta-sub { color: #71717A; font-size: 16px; margin-bottom: 40px; }
-        .cta-form-wrap { max-width: 520px; margin: 0 auto 24px; }
-        .cta-note { font-size: 13px; color: #555; margin-bottom: 20px; }
-        .cta-social-proof { font-size: 14px; color: #71717A; }
-        .cta-social-proof strong { color: #FAFAFA; }
-
-        /* ─── FOOTER ───────────────────────────────────────── */
-        .lp-footer {
-          border-top: 1px solid #1A1A1A;
-          padding: 40px;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: space-between;
-          gap: 20px;
-          font-size: 13px;
-          color: #555;
-        }
-        .footer-left { display: flex; flex-direction: column; gap: 4px; }
-        .footer-brand { font-size: 16px; font-weight: 800; color: #FAFAFA; margin-bottom: 2px; }
-        .footer-tagline { color: #555; }
-        .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-        .footer-link { color: #555; text-decoration: none; transition: color 0.2s; }
-        .footer-link:hover { color: #FAFAFA; }
-
-        /* ─── Responsive ───────────────────────────────────── */
-        @media (max-width: 768px) {
-          .lp-nav { padding: 16px 20px; }
-          .lp-hero { padding: 60px 20px 60px; }
-          .lp-section { padding: 60px 20px; }
-          .problem-grid { grid-template-columns: 1fr; gap: 40px; }
-          .feature-cards { grid-template-columns: 1fr; }
-          .pricing-grid { grid-template-columns: 1fr; }
-          .testimonials-grid { grid-template-columns: 1fr; }
-          .mock-stats { grid-template-columns: 1fr; }
-          .mock-deals { grid-template-columns: 1fr; }
-          .mock-filters { display: none; }
-          .lp-footer { flex-direction: column; padding: 32px 20px; text-align: center; }
-        }
-      `}</style>
-
-      <div className="lp-root">
-
-        {/* ── NAV ─────────────────────────────────────────── */}
-        <nav className="lp-nav">
-          <a href="/" className="lp-wordmark">Earn<span>HQ</span></a>
-          <div className="lp-nav-actions">
-            <a href="/sign-in" className="nav-link">Sign in</a>
-            <a href="#waitlist" className="nav-cta">Join waitlist →</a>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="text-xl font-extrabold tracking-tight">
+            Earn<span className="text-primary">HQ</span>
+          </Link>
+          <div className="flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</Link>
+              <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
+              <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+              <Link href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
+            </div>
+            <Link href="#cta" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4">
+              Join waitlist →
+            </Link>
           </div>
-        </nav>
+        </div>
+      </nav>
 
-        {/* ── SECTION 1: HERO ─────────────────────────────── */}
-        <section className="lp-hero">
-          <div className="hero-badge fade-up-1">✦ Now in early access</div>
-          <h1 className="hero-h1 fade-up-2">
-            Your brand deal<br />
-            <span className="brand-word">command center.</span>
+      {/* Hero */}
+      <section id="hero" className="relative py-24 md:py-32 px-6 text-center overflow-hidden">
+        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.12)_0%,transparent_70%)] pointer-events-none" />
+        <div className="max-w-4xl mx-auto relative">
+          <Badge variant="outline" className="mb-8 px-4 py-1.5 text-sm border-border bg-[#111111]">
+            <span className="w-2 h-2 rounded-full bg-success mr-2 shadow-[0_0_8px_theme(colors.success)]" />
+            Now accepting waitlist signups — <strong className="text-foreground ml-1">3 months free</strong>
+          </Badge>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6">
+            Stop managing brand deals<br />
+            <span className="text-primary">in your inbox.</span>
           </h1>
-          <p className="hero-sub fade-up-3">
-            Stop losing track of sponsorships. EarnHQ connects to your Gmail, finds every brand deal, and manages payments, invoices, and deadlines — automatically.
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
+            EarnHQ connects to Gmail, automatically extracts your sponsorship deals using AI, and gives you a clean command center to manage deliverables, send invoices, and track payments — all in one place.
           </p>
-          <div className="hero-actions fade-up-4">
-            <a href="#waitlist" className="btn-primary">Join the waitlist →</a>
-            <a href="#how-it-works" className="btn-secondary">See how it works ↓</a>
-          </div>
-          <div className="hero-platforms fade-up-4">
-            <span>— Trusted by creators on —</span>
-            <span className="platform-pill">🎥 YouTube</span>
-            <span className="platform-pill">📸 Instagram</span>
-            <span className="platform-pill">🎵 TikTok</span>
-            <span className="platform-pill">🎙️ Podcasts</span>
-          </div>
-        </section>
 
-        {/* ── SECTION 2: PROBLEM ──────────────────────────── */}
-        <section className="lp-section" id="problem">
-          <div className="lp-section-inner">
-            <div className="problem-grid">
-              <div>
-                <div className="section-label">The problem</div>
-                <h2 className="section-h2">You&apos;re managing 10 brand deals.<br />In chaos.</h2>
-                <p className="section-sub">One spreadsheet. Multiple email threads. Invoices in Google Docs. Payments weeks late.</p>
-                <div className="problem-stats" style={{ marginTop: '40px' }}>
-                  <div className="stat-item">
-                    <div className="stat-number">87%</div>
-                    <div className="stat-desc">of creators report receiving late payments from brand partners.</div>
-                  </div>
-                  <div className="stat-item">
-                    <div className="stat-number">100h</div>
-                    <div className="stat-desc">per year spent on sponsorship admin — time you could spend creating.</div>
-                  </div>
-                  <div className="stat-item">
-                    <div className="stat-number">3.2x</div>
-                    <div className="stat-desc">more deals managed by creators who use a dedicated back-office tool.</div>
-                  </div>
-                </div>
-              </div>
-              <div className="problem-visual">
-                <div className="chaos-items">
-                  <div className="chaos-card" style={{ top: '8%', left: '5%', transform: 'rotate(-3deg)' }}>📊 deals_tracker_v3_FINAL.xlsx</div>
-                  <div className="chaos-card red" style={{ top: '22%', right: '4%', transform: 'rotate(2deg)' }}>⚠️ Nike invoice — 45 days overdue</div>
-                  <div className="chaos-card" style={{ top: '38%', left: '8%', transform: 'rotate(-1deg)' }}>📧 Re: Re: Re: contract terms...</div>
-                  <div className="chaos-card yellow" style={{ top: '52%', right: '6%', transform: 'rotate(3deg)' }}>⏰ Samsung deliverable DUE TODAY</div>
-                  <div className="chaos-card" style={{ top: '66%', left: '12%', transform: 'rotate(-2deg)' }}>💸 Paid? Unpaid? Check Gmail...</div>
-                  <div className="chaos-card red" style={{ bottom: '8%', right: '10%', transform: 'rotate(1deg)' }}>🔴 Missing: Apple contract signed?</div>
-                </div>
-              </div>
+          <div className="flex flex-wrap gap-3 justify-center mb-5 max-w-md mx-auto">
+            <WaitlistForm variant="inline" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            No credit card. <strong className="text-foreground">3 months of Pro free</strong> for waitlist members.
+          </p>
+
+          <div className="flex justify-center gap-12 mt-16 flex-wrap">
+            <div className="text-center">
+              <div className="text-3xl font-extrabold tracking-tight">5–15</div>
+              <div className="text-sm text-muted-foreground mt-1">deals managed per creator / month</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-extrabold tracking-tight">4 hrs</div>
+              <div className="text-sm text-muted-foreground mt-1">avg. admin time saved per week</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-extrabold tracking-tight">$0</div>
+              <div className="text-sm text-muted-foreground mt-1">to get started</div>
             </div>
           </div>
-        </section>
 
-        {/* ── SECTION 3: SOLUTION ─────────────────────────── */}
-        <section className="lp-section solution-bg" id="how-it-works">
-          <div className="lp-section-inner">
-            <div className="section-label">How it works</div>
-            <h2 className="section-h2">From chaos to clarity<br />in minutes.</h2>
-            <div className="feature-cards" id="feature-cards">
-              <div className="feature-card">
-                <div className="feature-num">01</div>
-                <span className="feature-icon">📬</span>
-                <h3 className="feature-title">Connect Gmail</h3>
-                <p className="feature-desc">One click. EarnHQ scans your inbox and finds every brand deal automatically — no manual entry.</p>
+          {/* Product Preview */}
+          <div className="mt-16 bg-[#111111] border border-border rounded-2xl overflow-hidden shadow-[0_0_0_1px_theme(colors.border),0_48px_80px_rgba(0,0,0,0.6)]">
+            <div className="bg-[#0D0D0D] border-b border-border p-3 flex items-center gap-3">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-error" />
+                <div className="w-2.5 h-2.5 rounded-full bg-warning" />
+                <div className="w-2.5 h-2.5 rounded-full bg-success" />
               </div>
-              <div className="feature-card">
-                <div className="feature-num">02</div>
-                <span className="feature-icon">📋</span>
-                <h3 className="feature-title">See Every Deal</h3>
-                <p className="feature-desc">All your sponsorships in one dashboard. Status, deadlines, and payments — at a glance.</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-num">03</div>
-                <span className="feature-icon">💳</span>
-                <h3 className="feature-title">Get Paid Faster</h3>
-                <p className="feature-desc">Generate professional invoices in seconds. Automated reminders when brands go quiet.</p>
+              <div className="flex-1 bg-border rounded h-6 flex items-center px-3 text-xs text-muted-foreground max-w-[280px]">
+                app.earnhq.co/deals
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* ── SECTION 4: DASHBOARD MOCKUP ─────────────────── */}
-        <section className="lp-section dashboard-section">
-          <div className="lp-section-inner">
-            <div style={{ textAlign: 'center', marginBottom: '0' }}>
-              <div className="section-label" style={{ display: 'inline-block' }}>Product preview</div>
-              <h2 className="section-h2">Everything in one place.</h2>
-              <p className="section-sub" style={{ margin: '0 auto' }}>A unified view of every deal, every dollar, every deadline.</p>
-            </div>
-            <div className="dashboard-wrap">
-              <div className="dashboard-mockup float-anim">
-                <div className="mock-titlebar">
-                  <div className="mock-dot mock-dot-r"></div>
-                  <div className="mock-dot mock-dot-y"></div>
-                  <div className="mock-dot mock-dot-g"></div>
-                  <div className="mock-url">app.earnhq.com/dashboard</div>
-                </div>
-                <div className="mock-nav">
-                  <div className="mock-nav-brand">EarnHQ</div>
-                  <div className="mock-nav-item active">Dashboard</div>
-                  <div className="mock-nav-item">Deals</div>
-                  <div className="mock-nav-item">Invoices</div>
-                  <div className="mock-nav-item">Payments</div>
-                </div>
-                <div className="mock-body">
-                  <div className="mock-stats">
-                    <div className="mock-stat">
-                      <div className="mock-stat-label">Pipeline value</div>
-                      <div className="mock-stat-value">$24,500</div>
-                    </div>
-                    <div className="mock-stat">
-                      <div className="mock-stat-label">Earned this year</div>
-                      <div className="mock-stat-value green">$18,200</div>
-                    </div>
-                    <div className="mock-stat">
-                      <div className="mock-stat-label">Outstanding</div>
-                      <div className="mock-stat-value yellow">$6,300</div>
-                    </div>
+            <div className="grid md:grid-cols-[200px_1fr] min-h-[380px]">
+              <div className="hidden md:flex flex-col gap-1 p-5 border-r border-border">
+                {['Dashboard', 'Deals', 'Invoices', 'Payments', 'Rate Card'].map((item, i) => (
+                  <div
+                    key={item}
+                    className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm ${
+                      i === 0 ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {item}
                   </div>
-                  <div className="mock-filters">
-                    <span className="mock-filter-chip chip-negotiating">Negotiating</span>
-                    <span className="mock-filter-chip chip-contracted">Contracted</span>
-                    <span className="mock-filter-chip chip-live">Live</span>
-                    <span className="mock-filter-chip chip-invoiced">Invoiced</span>
-                    <span className="mock-filter-chip chip-paid">Paid</span>
-                  </div>
-                  <div className="mock-deals">
-                    <div className="mock-deal-card">
-                      <div className="mock-deal-brand">Nike</div>
-                      <div className="mock-deal-amount">$2,500</div>
-                      <div className="mock-deal-status"><span className="dot yellow"></span>Due in 3d</div>
+                ))}
+              </div>
+              <div className="p-5">
+                <div className="text-base font-bold mb-4">Active Deals</div>
+                <div className="space-y-2">
+                  {dealCards.map((deal) => (
+                    <div key={deal.brand} className="bg-background border border-border rounded-lg p-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
+                          {deal.initials}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold">{deal.brand}</div>
+                          <div className="text-xs text-muted-foreground">{deal.meta}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-sm font-bold">{deal.amount}</div>
+                        <Badge variant="secondary" className={deal.statusClass}>
+                          {deal.status}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="mock-deal-card">
-                      <div className="mock-deal-brand">Samsung</div>
-                      <div className="mock-deal-amount">$4,000</div>
-                      <div className="mock-deal-status"><span className="dot blue"></span>Due in 7d</div>
-                    </div>
-                    <div className="mock-deal-card">
-                      <div className="mock-deal-brand">Apple</div>
-                      <div className="mock-deal-amount">$6,000</div>
-                      <div className="mock-deal-status"><span className="dot"></span>Live ✓</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── SECTION 5: PRICING ──────────────────────────── */}
-        <section className="lp-section" id="pricing">
-          <div className="lp-section-inner">
-            <div style={{ textAlign: 'center' }}>
-              <div className="section-label" style={{ display: 'inline-block' }}>Pricing</div>
-              <h2 className="section-h2">Start free. Upgrade when you&apos;re ready.</h2>
-            </div>
-            <div className="pricing-grid" id="pricing-grid">
-              <div className="pricing-card">
-                <span className="pricing-badge">Free forever</span>
-                <div className="pricing-name">Free</div>
-                <div className="pricing-price">$0</div>
-                <div className="pricing-period">forever</div>
-                <ul className="pricing-features">
-                  <li className="pricing-feature">3 active deals</li>
-                  <li className="pricing-feature">Manual entry</li>
-                  <li className="pricing-feature">Basic dashboard</li>
-                </ul>
-                <a href="#waitlist" className="pricing-btn">Join waitlist</a>
-              </div>
-              <div className="pricing-card featured">
-                <span className="pricing-badge">Most popular</span>
-                <div className="pricing-name">Pro</div>
-                <div className="pricing-price">$29</div>
-                <div className="pricing-period">per month</div>
-                <ul className="pricing-features">
-                  <li className="pricing-feature">Unlimited deals</li>
-                  <li className="pricing-feature">Gmail integration</li>
-                  <li className="pricing-feature">Invoice generator</li>
-                  <li className="pricing-feature">Payment tracking</li>
-                  <li className="pricing-feature">Rate card</li>
-                  <li className="pricing-feature">Overdue alerts</li>
-                </ul>
-                <a href="#waitlist" className="pricing-btn">Join waitlist</a>
-              </div>
-              <div className="pricing-card">
-                <span className="pricing-badge">For agencies</span>
-                <div className="pricing-name">Agency</div>
-                <div className="pricing-price">$99</div>
-                <div className="pricing-period">per month</div>
-                <ul className="pricing-features">
-                  <li className="pricing-feature">Multi-creator dashboard</li>
-                  <li className="pricing-feature">White-label invoices</li>
-                  <li className="pricing-feature">Team access</li>
-                  <li className="pricing-feature">Priority support</li>
-                  <li className="pricing-feature">Everything in Pro</li>
-                </ul>
-                <a href="mailto:hello@earnhq.com" className="pricing-btn">Contact us</a>
-              </div>
-            </div>
+      {/* Problem */}
+      <section id="problem" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            The Problem
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+            Running brand deals is<br />a second job. Without the tools.
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
+            You&apos;re creative director, account manager, accountant, and project manager — all at once. Most creators manage 5–15 brand deals a month with nothing but their inbox and a spreadsheet.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-5 mt-14">
+            {problems.map((problem) => (
+              <Card key={problem.title} className="p-7 bg-[#111111] border-border relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-error to-transparent opacity-60" />
+                <span className="text-3xl mb-3 block">{problem.emoji}</span>
+                <h3 className="text-base font-bold mb-2">{problem.title}</h3>
+                <p className="text-[15px] text-muted-foreground leading-relaxed">{problem.desc}</p>
+              </Card>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── SECTION 6: SOCIAL PROOF ─────────────────────── */}
-        <section className="lp-section testimonials-bg">
-          <div className="lp-section-inner">
-            <div style={{ textAlign: 'center' }}>
-              <div className="section-label" style={{ display: 'inline-block' }}>Social proof</div>
-              <h2 className="section-h2">Creators love EarnHQ.</h2>
-            </div>
-            <div className="testimonials-grid" id="testimonials-grid">
-              <div className="testimonial-card">
-                <p className="testimonial-quote">Finally, a tool that understands how sponsorships actually work. I can see every deal at a glance.</p>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar">C</div>
+      {/* How It Works */}
+      <section id="how" className="py-24 px-6 bg-[#111111] border-y border-border">
+        <div className="max-w-6xl mx-auto text-center">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            How It Works
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+            From inbox chaos to<br />clean pipeline in minutes.
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Three steps and you&apos;re running. No manual entry, no spreadsheet migration.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-px bg-border mt-16 relative">
+            <div className="hidden md:block absolute top-9 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            {steps.map((step, i) => (
+              <div key={step.title} className="bg-background p-8 text-center md:text-left">
+                <div className="w-[72px] h-[72px] rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto md:mx-0 mb-6 text-2xl relative z-10">
+                  {step.emoji}
+                </div>
+                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
+                <p className="text-[15px] text-muted-foreground leading-relaxed mb-3">{step.desc}</p>
+                <Badge variant="outline" className="text-primary border-primary/25 bg-primary/10 text-xs">
+                  {step.detail}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            Features
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+            Everything a solo creator<br />needs to run their deal business.
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
+            No bloat. No agency features you&apos;ll never use. Built for the creator running 5–15 deals a month on their own.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-px bg-border border border-border rounded-2xl overflow-hidden mt-14">
+            {features.map((feature) => (
+              <div key={feature.title} className="bg-[#111111] p-8 hover:bg-[#161616] transition-colors">
+                <div className="w-12 h-12 bg-primary/10 border border-primary/25 rounded-xl flex items-center justify-center mb-4 text-xl">
+                  {feature.emoji}
+                </div>
+                <h3 className="text-base font-bold mb-2">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-24 px-6 bg-[#111111] border-y border-border">
+        <div className="max-w-6xl mx-auto text-center">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            Early Feedback
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            What creators are saying.
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-5 mt-14">
+            {testimonials.map((t) => (
+              <Card key={t.name} className="p-6 bg-background border-border text-left">
+                <div className="text-warning text-sm mb-3">★★★★★</div>
+                <p className="text-[15px] leading-relaxed mb-5 italic">&ldquo;{t.quote}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center text-sm font-bold text-white`}>
+                    {t.initials}
+                  </div>
                   <div>
-                    <div className="testimonial-handle">@CreatorHandle</div>
-                    <div className="testimonial-meta">500K subscribers · YouTube</div>
+                    <div className="text-sm font-semibold">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.handle}</div>
                   </div>
                 </div>
-              </div>
-              <div className="testimonial-card">
-                <p className="testimonial-quote">I found $4,000 in unpaid invoices in the first 5 minutes. This tool paid for itself instantly.</p>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar" style={{ background: 'linear-gradient(135deg, #22C55E, #3B82F6)' }}>A</div>
-                  <div>
-                    <div className="testimonial-handle">@AnotherCreator</div>
-                    <div className="testimonial-meta">200K subscribers · YouTube</div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            Pricing
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+            Simple, creator-friendly pricing.
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Start free. Upgrade when you&apos;re ready. Waitlist members get 3 months of Pro free.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-5 mt-14 items-start">
+            {pricingPlans.map((plan) => (
+              <Card
+                key={plan.name}
+                className={`p-8 text-left relative ${
+                  plan.featured
+                    ? 'border-primary bg-gradient-to-b from-primary/5 to-[#111111]'
+                    : 'bg-[#111111] border-border'
+                }`}
+              >
+                {plan.featured && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                    Most Popular
                   </div>
+                )}
+                <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  {plan.name}
                 </div>
-              </div>
-              <div className="testimonial-card">
-                <p className="testimonial-quote">My manager uses EarnHQ to track all 12 of my deals. It&apos;s replaced three different spreadsheets.</p>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar" style={{ background: 'linear-gradient(135deg, #F59E0B, #EF4444)' }}>B</div>
-                  <div>
-                    <div className="testimonial-handle">@BigCreator</div>
-                    <div className="testimonial-meta">2M followers · TikTok</div>
-                  </div>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-4xl font-black tracking-tight">{plan.price}</span>
+                  <span className="text-sm text-muted-foreground">{plan.period}</span>
                 </div>
-              </div>
-            </div>
+                <p className="text-sm text-muted-foreground mb-6">{plan.desc}</p>
+                <hr className="border-border mb-6" />
+                <ul className="space-y-2.5 mb-7">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm">
+                      <span className="text-success font-bold">✓</span>
+                      {f}
+                    </li>
+                  ))}
+                  {plan.disabledFeatures.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                      <span>—</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={plan.name === 'Agency' ? 'mailto:hello@earnhq.co' : '#cta'}
+                  className={cn(
+                    'inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 w-full',
+                    plan.featured
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                  )}
+                >
+                  {plan.name === 'Agency' ? 'Contact us' : 'Join waitlist — 3 months free →'}
+                </Link>
+              </Card>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── SECTION 7: FINAL CTA ─────────────────────────── */}
-        <section className="lp-section cta-section" id="waitlist">
-          <div className="lp-section-inner cta-inner">
-            <h2 className="cta-h2">Ready to take control<br />of your brand deals?</h2>
-            <p className="cta-sub">Join thousands of creators managing sponsorships the smart way.</p>
-            <div className="cta-form-wrap">
-              <WaitlistForm variant="card" />
-            </div>
-            <p className="cta-note">No credit card. No spam. Just EarnHQ when it&apos;s ready.</p>
-            <p className="cta-social-proof">Already <strong>847 creators</strong> on the waitlist.</p>
+      {/* FAQ */}
+      <section id="faq" className="py-24 px-6 bg-[#111111] border-t border-border">
+        <div className="max-w-6xl mx-auto text-center">
+          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
+            FAQ
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Common questions.
+          </h2>
+          <FAQ />
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section id="cta" className="py-28 px-6 text-center relative overflow-hidden border-t border-border">
+        <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1)_0%,transparent_70%)] pointer-events-none" />
+        <div className="max-w-2xl mx-auto relative">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-5">
+            Your brand deal business<br />deserves <span className="text-primary">better tools.</span>
+          </h2>
+          <p className="text-lg text-muted-foreground mb-10">
+            Join the waitlist today. Get 3 months of Pro free when we launch. No credit card required.
+          </p>
+          <div className="max-w-md mx-auto mb-4">
+            <WaitlistForm variant="inline" />
           </div>
-        </section>
+          <p className="text-sm text-muted-foreground">
+            Joining takes 10 seconds. Unsubscribe anytime.
+          </p>
+        </div>
+      </section>
 
-        {/* ── FOOTER ──────────────────────────────────────── */}
-        <footer className="lp-footer">
-          <div className="footer-left">
-            <div className="footer-brand">EarnHQ</div>
-            <div className="footer-tagline">Made for creators, by creators</div>
+      {/* Footer */}
+      <footer className="border-t border-border py-8 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-center md:text-left">
+            <div className="font-extrabold">Earn<span className="text-primary">HQ</span></div>
+            <div className="text-sm text-muted-foreground">© 2026 EarnHQ. All rights reserved.</div>
           </div>
-          <div className="footer-links">
-            <a href="/privacy" className="footer-link">Privacy Policy</a>
-            <a href="/terms" className="footer-link">Terms of Service</a>
-            <a href="https://x.com/earnhq" className="footer-link" target="_blank" rel="noopener noreferrer">Twitter / X</a>
+          <div className="flex gap-6 text-sm text-muted-foreground">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <a href="mailto:hello@earnhq.co" className="hover:text-foreground transition-colors">Contact</a>
           </div>
-          <div>© 2025 EarnHQ</div>
-        </footer>
-
-        {/* ── SCROLL ANIMATIONS ────────────────────────────── */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            var observer = new IntersectionObserver(function(entries) {
-              entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                  var cards = entry.target.querySelectorAll('.feature-card, .pricing-card, .testimonial-card');
-                  cards.forEach(function(card, i) {
-                    setTimeout(function() { card.classList.add('visible'); }, i * 120);
-                  });
-                  observer.unobserve(entry.target);
-                }
-              });
-            }, { threshold: 0.1 });
-
-            ['feature-cards', 'pricing-grid', 'testimonials-grid'].forEach(function(id) {
-              var el = document.getElementById(id);
-              if (el) observer.observe(el);
-            });
-          })();
-        ` }} />
-      </div>
-    </>
+        </div>
+      </footer>
+    </div>
   )
 }

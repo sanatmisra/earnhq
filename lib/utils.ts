@@ -21,3 +21,18 @@ export function getDaysUntil(date: string | Date) {
   const diff = new Date(date).getTime() - new Date().getTime()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
+
+export function getBrandLogoUrl(brandName: string): string {
+  // Use Clearbit logo API for brand logos
+  const domain = brandName.toLowerCase().replace(/\s+/g, '') + '.com'
+  return `https://logo.clearbit.com/${domain}`
+}
+
+export function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
