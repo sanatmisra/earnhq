@@ -1,0 +1,13 @@
+{
+  "name": "@earnhq/db",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "supabase": "^1.142.0",
+    "typescript": "^5.0.0"
+  }
+}
