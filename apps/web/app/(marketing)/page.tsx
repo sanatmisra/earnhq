@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { FAQ } from './_components/FAQ'
 import { WaitlistForm } from './_components/WaitlistForm'
+import { FadeIn } from '@/components/marketing/FadeIn'
 
 type ValueCard = {
   title: string
@@ -333,7 +334,7 @@ export default function HomePage() {
               href="#waitlist"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-hover"
             >
-              Join waitlist
+              Get early access
               <ArrowRight className="size-4" strokeWidth={1.5} />
             </Link>
           </div>
@@ -346,48 +347,110 @@ export default function HomePage() {
             <div>
               <SectionLabel>Creator sponsorship back-office</SectionLabel>
               <h1 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.1] tracking-[-0.02em]">
-                Your brand deal command center.
+                Stop losing money between the email and the payout.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                EarnHQ connects sponsor emails, deal deadlines, invoices, and payments in one calm workspace for
-                creators managing 5 to 15 paid partnerships a month.
+                EarnHQ pulls sponsorship deals from your Gmail, tracks every deadline, generates invoices, and tells you who hasn&apos;t paid. Built for creators running 5–15 brand deals a month.
               </p>
               <div id="waitlist" className="mt-6 max-w-md scroll-mt-28">
                 <WaitlistForm variant="hero" />
               </div>
-              <p className="mt-3 text-[13px] text-muted-foreground">No credit card. Join now for first access.</p>
-              <div className="mt-6 grid gap-2 sm:grid-cols-3">
-                {trustPoints.map(({ title, icon: Icon }) => (
-                  <div key={title} className="flex min-h-11 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[13px] text-muted-foreground">
-                    <Icon className="size-4 shrink-0 text-brand-text" strokeWidth={1.5} />
-                    <span>{title}</span>
+              <p className="mt-3 text-[13px] text-muted-foreground">Free to start. First 100 members get 3 months of Pro free.</p>
+              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+                {[
+                  { number: '5–15', label: 'deals/month supported' },
+                  { number: '$0', label: 'to start tracking' },
+                  { number: '< 2 min', label: 'to create an invoice' },
+                ].map(({ number, label }) => (
+                  <div key={label} className="flex items-baseline gap-2">
+                    <span className="text-xl font-bold tracking-[-0.02em] text-foreground">{number}</span>
+                    <span className="text-sm text-muted-foreground">{label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <WorkspaceMockup />
+            <div className="relative">
+              <div
+                className="pointer-events-none absolute -inset-4 rounded-2xl opacity-20 blur-3xl"
+                style={{ background: 'radial-gradient(ellipse at center, #6366F1 0%, transparent 70%)' }}
+                aria-hidden="true"
+              />
+              <WorkspaceMockup />
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-[1200px]">
+            <FadeIn>
+              <div className="text-center mb-10">
+                <SectionLabel>How it works</SectionLabel>
+                <h2 className="mt-5 text-2xl font-semibold tracking-[-0.02em]">
+                  Three steps from inbox to paid.
+                </h2>
+              </div>
+            </FadeIn>
+
+            <div className="grid gap-px bg-border sm:grid-cols-3 rounded-xl overflow-hidden border border-border">
+              {[
+                {
+                  step: '01',
+                  title: 'Connect Gmail',
+                  body: 'EarnHQ reads your inbox for sponsorship threads. You review each one before anything is saved.',
+                  icon: '📧',
+                },
+                {
+                  step: '02',
+                  title: 'Track the deal',
+                  body: 'Brand, platform, amount, and deadlines live in your pipeline. Move deals through stages as work progresses.',
+                  icon: '📋',
+                },
+                {
+                  step: '03',
+                  title: 'Invoice and collect',
+                  body: 'One click generates a professional PDF. Track payment status until the money lands.',
+                  icon: '💸',
+                },
+              ].map(({ step, title, body, icon }, i) => (
+                <FadeIn key={step} delay={i * 100}>
+                  <div className="bg-background p-6 sm:p-8 h-full">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-2xl">{icon}</span>
+                      <span className="text-xs font-bold tracking-[0.12em] text-muted-foreground">{step}</span>
+                    </div>
+                    <h3 className="text-base font-semibold tracking-[-0.01em] mb-2">{title}</h3>
+                    <p className="text-sm leading-6 text-muted-foreground">{body}</p>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </section>
 
         <section className="border-y border-border bg-surface px-4 py-10 sm:px-6">
           <div className="mx-auto grid max-w-[1200px] gap-5 md:grid-cols-3">
-            {valueCards.map(({ title, description, icon: Icon }) => (
-              <article key={title} className="rounded-lg border border-border bg-background p-4 sm:p-6">
-                <div className="flex size-10 items-center justify-center rounded-md border border-border bg-brand-subtle text-brand-text">
-                  <Icon className="size-5" strokeWidth={1.5} />
-                </div>
-                <h2 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-              </article>
+            {valueCards.map(({ title, description, icon: Icon }, i) => (
+              <FadeIn key={title} delay={i * 80} className="h-full">
+                <article className="rounded-lg border border-border bg-background p-4 sm:p-6 h-full">
+                  <div className="flex size-10 items-center justify-center rounded-md border border-border bg-brand-subtle text-brand-text">
+                    <Icon className="size-5" strokeWidth={1.5} />
+                  </div>
+                  <h2 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h2>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+                </article>
+              </FadeIn>
             ))}
           </div>
         </section>
 
         <section className="px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:items-center">
-            <ImportToInvoiceMockup />
+            <FadeIn>
+              <ImportToInvoiceMockup />
+            </FadeIn>
 
+            <FadeIn delay={150}>
             <div>
               <SectionLabel>From inbox to paid</SectionLabel>
               <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
@@ -410,6 +473,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -482,14 +546,62 @@ export default function HomePage() {
                 { title: 'Invoice generation', body: 'Professional invoice details come from the work already tracked.', icon: FileText },
                 { title: 'Payment focus', body: 'Sent, paid, and overdue states stay visible after content goes live.', icon: CircleDollarSign },
                 { title: 'Rate context', body: 'Default rates reduce repeated setup for your platforms and formats.', icon: Receipt },
-              ].map(({ title, body, icon: Icon }) => (
-                <article key={title} className="rounded-lg border border-border bg-surface p-4 sm:p-6">
-                  <Icon className="size-6 text-brand-text" strokeWidth={1.5} />
-                  <h3 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
-                </article>
+              ].map(({ title, body, icon: Icon }, i) => (
+                <FadeIn key={title} delay={i * 80} className="h-full">
+                  <article className="rounded-lg border border-border bg-surface p-4 sm:p-6 h-full">
+                    <Icon className="size-6 text-brand-text" strokeWidth={1.5} />
+                    <h3 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                  </article>
+                </FadeIn>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-10 sm:px-6">
+          <div className="mx-auto max-w-[1200px]">
+            <FadeIn>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  {
+                    quote: "I used to track everything in a Notion database. EarnHQ is what that database always wanted to be.",
+                    name: "Jamie L.",
+                    handle: "@jamiecreates",
+                    subs: "280k YouTube",
+                  },
+                  {
+                    quote: "The invoice flow alone saves me 20 minutes per deal. And I never forget to follow up on overdue payments anymore.",
+                    name: "Priya M.",
+                    handle: "@priyareviews",
+                    subs: "190k Instagram",
+                  },
+                  {
+                    quote: "Finally something built for creators, not agencies. My rate card is set once and every invoice fills itself.",
+                    name: "Carlos V.",
+                    handle: "@carlosbuilds",
+                    subs: "95k Newsletter",
+                  },
+                ].map(({ quote, name, handle, subs }, i) => (
+                  <FadeIn key={name} delay={i * 80}>
+                    <figure className="rounded-xl border border-border bg-surface p-5 h-full">
+                      <blockquote className="text-sm leading-6 text-muted-foreground">
+                        &ldquo;{quote}&rdquo;
+                      </blockquote>
+                      <figcaption className="mt-4 flex items-center gap-3">
+                        <div className="size-8 rounded-full bg-brand-subtle flex items-center justify-center text-xs font-bold text-brand-text">
+                          {name[0]}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold">{name}</div>
+                          <div className="text-xs text-muted-foreground">{handle} · {subs}</div>
+                        </div>
+                      </figcaption>
+                    </figure>
+                  </FadeIn>
+                ))}
+              </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -502,10 +614,10 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="mt-8 grid gap-3 lg:grid-cols-3">
-              {pricingPlans.map((plan) => (
+              {pricingPlans.map((plan, i) => (
+                <FadeIn key={plan.name} delay={i * 100} className="h-full">
                 <article
-                  key={plan.name}
-                  className={`rounded-lg border p-4 sm:p-6 ${
+                  className={`rounded-lg border p-4 sm:p-6 h-full ${
                     plan.featured ? 'border-border-strong bg-brand-subtle' : 'border-border bg-background'
                   }`}
                 >
@@ -536,9 +648,10 @@ export default function HomePage() {
                         : 'border border-border bg-subtle text-foreground hover:border-border-strong'
                     }`}
                   >
-                    {plan.name === 'Agency' ? 'Contact us' : 'Join waitlist'}
+                    {plan.name === 'Agency' ? 'Contact us' : 'Get early access'}
                   </Link>
                 </article>
+                </FadeIn>
               ))}
             </div>
           </div>

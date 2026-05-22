@@ -3,20 +3,19 @@ import { NextRequest, NextResponse } from 'next/server'
 const { renderToBuffer } = require('@react-pdf/renderer') as { renderToBuffer: (el: unknown) => Promise<Buffer> }
 import { Resend } from 'resend'
 import { createElement } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
 import { createClient } from '@/lib/supabase/server'
+// createElement is used for InvoicePDF (react-pdf)
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { InvoicePDF } from '@/components/invoices/InvoicePDF'
-import { InvoiceEmail } from '@/lib/email/invoice-email'
+import { buildInvoiceEmailHtml } from '@/lib/email/invoice-email'
 import type { Invoice, Profile } from '@earnhq/types'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -88,17 +87,15 @@ export async function POST(
     from: `${creatorName} via EarnHQ <invoices@earnhq.com>`,
     to: [invoice.client_email],
     subject: `Invoice ${invoice.invoice_number} from ${creatorName} — ${new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency }).format(invoice.total)}`,
-    html: renderToStaticMarkup(
-      createElement(InvoiceEmail, {
-        invoiceNumber: invoice.invoice_number,
-        creatorName,
-        clientName: invoice.client_name,
-        amount: invoice.total,
-        currency: invoice.currency,
-        dueDate: invoice.due_date,
-        pdfUrl: publicUrl,
-      })
-    ),
+    html: buildInvoiceEmailHtml({
+      invoiceNumber: invoice.invoice_number,
+      creatorName,
+      clientName: invoice.client_name,
+      amount: invoice.total,
+      currency: invoice.currency,
+      dueDate: invoice.due_date,
+      pdfUrl: publicUrl,
+    }),
     attachments: [
       {
         filename: `${invoice.invoice_number}.pdf`,
