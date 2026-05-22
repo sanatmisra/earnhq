@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { FileText, Plus } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FileText, Plus, Send, CheckCircle2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { InvoiceForm } from '@/components/invoices/InvoiceForm'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -38,25 +39,55 @@ export default function InvoicesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [sending, setSending] = useState<string | null>(null)
+  const [paying, setPaying] = useState<string | null>(null)
 
-  useEffect(() => {
-    async function fetchInvoices() {
-      setIsLoading(true)
-
-      try {
-        const response = await fetch('/api/invoices')
-
-        if (response.ok) {
-          const json = await response.json()
-          setInvoices(json.data ?? [])
-        }
-      } finally {
-        setIsLoading(false)
+  const fetchInvoices = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/invoices')
+      if (response.ok) {
+        const json = await response.json()
+        setInvoices(json.data ?? [])
       }
+    } finally {
+      setIsLoading(false)
     }
-
-    fetchInvoices()
   }, [])
+
+  useEffect(() => { fetchInvoices() }, [fetchInvoices])
+
+  async function sendInvoice(id: string) {
+    setSending(id)
+    try {
+      const res = await fetch(`/api/invoices/${id}/send`, { method: 'POST' })
+      if (!res.ok) throw new Error((await res.json()).error)
+      toast.success('Invoice sent')
+      fetchInvoices()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to send invoice')
+    } finally {
+      setSending(null)
+    }
+  }
+
+  async function markPaid(id: string) {
+    setPaying(id)
+    try {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'paid' }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      toast.success('Invoice marked as paid')
+      fetchInvoices()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to update invoice')
+    } finally {
+      setPaying(null)
+    }
+  }
 
   const stats = useMemo(() => {
     return invoices.reduce(
@@ -135,6 +166,7 @@ export default function InvoicesPage() {
               <TableHead>Status</TableHead>
               <TableHead>Due</TableHead>
               <TableHead>Issued</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -147,11 +179,12 @@ export default function InvoicesPage() {
                   <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               ))
             ) : filteredInvoices.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-48 text-center">
+                <TableCell colSpan={7} className="h-48 text-center">
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
                     <FileText className="h-8 w-8" />
                     <span>No invoices match this view yet.</span>
@@ -187,6 +220,34 @@ export default function InvoicesPage() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {formatDate(invoice.issue_date)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1.5">
+                      {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 border-[#222222] px-2 text-xs"
+                          disabled={sending === invoice.id || !invoice.client_email}
+                          onClick={() => sendInvoice(invoice.id)}
+                          title={!invoice.client_email ? 'No email on invoice' : undefined}
+                        >
+                          <Send className="mr-1 h-3 w-3" />
+                          {sending === invoice.id ? 'Sending…' : 'Send'}
+                        </Button>
+                      )}
+                      {(invoice.status === 'sent' || invoice.status === 'overdue') && (
+                        <Button
+                          size="sm"
+                          className="h-7 bg-[#22C55E] px-2 text-xs text-white hover:bg-[#16a34a]"
+                          disabled={paying === invoice.id}
+                          onClick={() => markPaid(invoice.id)}
+                        >
+                          <CheckCircle2 className="mr-1 h-3 w-3" />
+                          {paying === invoice.id ? 'Updating…' : 'Paid'}
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

@@ -1,469 +1,594 @@
-'use client'
-
 import Link from 'next/link'
-import { WaitlistForm } from './_components/WaitlistForm'
+import {
+  ArrowRight,
+  CalendarClock,
+  Check,
+  CircleDollarSign,
+  FileText,
+  LayoutDashboard,
+  MailSearch,
+  Receipt,
+  ShieldCheck,
+  type LucideIcon,
+} from 'lucide-react'
 import { FAQ } from './_components/FAQ'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
+import { WaitlistForm } from './_components/WaitlistForm'
 
-const problems = [
+type ValueCard = {
+  title: string
+  description: string
+  icon: LucideIcon
+}
+
+const valueCards: ValueCard[] = [
   {
-    emoji: '📧',
-    title: 'Deal terms buried in 47 emails',
-    desc: "Brand reaches out in March. You negotiate for two weeks. The final rate, deliverable count, and usage rights are scattered across a thread you'll never find when you need them.",
+    title: 'Deals surfaced from Gmail',
+    description: 'Review likely sponsorship emails before EarnHQ saves the brand, value, platform, and deadline.',
+    icon: MailSearch,
   },
   {
-    emoji: '📊',
-    title: "A Google Sheet that's 3 months out of date",
-    desc: "You set it up with good intentions. Now it's a graveyard of stale deal statuses, missing payment dates, and brands you forgot you were still contracted with.",
+    title: 'One command center',
+    description: 'See negotiating, contracted, live, invoiced, and paid work without rebuilding a spreadsheet.',
+    icon: LayoutDashboard,
   },
   {
-    emoji: '💸',
-    title: 'Invoices you forgot to send',
-    desc: 'You went live. The brand loved it. You got busy making the next video. Six weeks later you realise nobody paid you — because you never sent an invoice.',
-  },
-  {
-    emoji: '⏰',
-    title: 'Deliverable deadlines you almost missed',
-    desc: 'The integration date was in the contract. The contract was in an email. The email got buried. Your brand contact is now sending a polite-but-panicked follow-up.',
+    title: 'Invoices ready fast',
+    description: 'Turn deal data into a professional invoice and keep payment state tied to the work.',
+    icon: Receipt,
   },
 ]
 
-const steps = [
-  {
-    emoji: '📥',
-    title: 'Connect Gmail',
-    desc: 'One-click OAuth. EarnHQ gets read-only access to your inbox — nothing is stored, nothing is sent on your behalf. Takes 30 seconds.',
-    detail: 'Read-only · No data stored',
-  },
-  {
-    emoji: '🤖',
-    title: 'AI Reads Your Deals',
-    desc: 'GPT-4o scans your sponsor threads and automatically extracts brand name, deal value, deliverables, deadlines, and platform. You review and confirm.',
-    detail: 'Powered by GPT-4o-mini',
-  },
-  {
-    emoji: '⚡',
-    title: 'Run Your Pipeline',
-    desc: 'Track every deal from negotiating to paid. Send a branded invoice in one click. Get deadline reminders. Know exactly who owes you money — and how much.',
-    detail: 'Invoice → Track → Get paid',
-  },
-]
+const actionRows = [
+  { brand: 'Apex Apparel', task: 'Review Gmail import', value: '$3,500', status: 'Ready', tone: 'brand' },
+  { brand: 'Verde Matcha', task: 'Draft due tomorrow', value: '$1,200', status: 'Due soon', tone: 'warning' },
+  { brand: 'North Shore Co.', task: 'Invoice overdue', value: '$2,200', status: 'Chase', tone: 'error' },
+] as const
 
-const features = [
-  { emoji: '📥', title: 'Smart Gmail Parsing', desc: 'AI scans your inbox for sponsorship threads and pulls out every deal detail automatically. Review once, save forever.' },
-  { emoji: '🗂️', title: 'Deal Pipeline', desc: 'A clean board that takes every deal from Negotiating → Contracted → In Production → Live → Invoiced → Paid. One source of truth.' },
-  { emoji: '📄', title: 'One-Click Invoices', desc: 'Professional, branded PDF invoices generated from your deal data. Send in one click. Looks like you have an accountant.' },
-  { emoji: '💳', title: 'Payment Tracking', desc: 'Always know what\'s outstanding and what\'s cleared. Never forget to follow up on an overdue invoice again.' },
-  { emoji: '💰', title: 'Rate Card Builder', desc: 'Build your standard pricing by platform and format. Share a clean rate card with any brand in seconds — no more "what do you charge?" back-and-forth.' },
-  { emoji: '🔔', title: 'Deliverable Reminders', desc: 'Automatic reminders before every deadline. Never get a "where\'s the video?" email from a brand again.' },
-]
-
-const testimonials = [
+const dealColumns = [
   {
-    quote: "I've been living in a Google Sheet for 2 years. The Gmail parser found 11 active deals I had half-forgotten about. This is exactly what I needed.",
-    name: 'Jamie K.',
-    handle: 'YouTube Creator · 280k subscribers',
-    initials: 'JK',
-    gradient: 'from-primary to-purple-500',
+    title: 'Negotiating',
+    tone: 'negotiating',
+    deals: ['Apex Apparel', 'Studio Mic Co.'],
   },
   {
-    quote: "I run about 8 podcast sponsorships a month. Tracking them was a mess. EarnHQ's pipeline view makes me feel like I actually have a business now.",
-    name: 'Marcus R.',
-    handle: 'Podcast Host · 120k listeners',
-    initials: 'MR',
-    gradient: 'from-success to-blue-500',
+    title: 'In production',
+    tone: 'production',
+    deals: ['Verde Matcha', 'North Shore Co.'],
   },
   {
-    quote: 'Sent my first EarnHQ invoice in 40 seconds. My old process was copy a Google Doc, edit it, export PDF, attach it to email. This is embarrassingly better.',
-    name: 'Sophia L.',
-    handle: 'Newsletter Creator · 45k subscribers',
-    initials: 'SL',
-    gradient: 'from-warning to-error',
+    title: 'Invoiced',
+    tone: 'invoiced',
+    deals: ['Trail Lens', 'Creator Stack'],
   },
-]
+  {
+    title: 'Paid',
+    tone: 'paid',
+    deals: ['Pulse Audio'],
+  },
+] as const
 
 const pricingPlans = [
   {
     name: 'Free',
     price: '$0',
-    period: '/ month',
-    desc: 'Perfect for getting started and testing the waters.',
-    features: ['3 active deals', 'Basic deal pipeline', 'Manual deal entry'],
-    disabledFeatures: ['Gmail sync & AI parsing', 'Invoice generation', 'Payment tracking'],
-    featured: false,
+    detail: 'For setting up your first deal workflow.',
+    features: ['3 active deals', 'Manual deal entry', 'Basic dashboard'],
   },
   {
     name: 'Pro',
     price: '$29',
-    period: '/ month',
-    desc: 'For the solo creator running a real brand deal business.',
-    features: ['Unlimited active deals', 'Gmail sync & AI parsing', 'Professional invoice generation', 'Payment tracking & reminders', 'Rate card builder', 'Deliverable deadline alerts'],
-    disabledFeatures: [],
+    detail: 'For solo creators running deals every month.',
+    features: ['Unlimited deals', 'Gmail sync', 'Invoices and payment tracking', 'Rate card and alerts'],
     featured: true,
   },
   {
     name: 'Agency',
     price: '$99',
-    period: '/ month',
-    desc: 'For managers running deals across multiple creator accounts.',
-    features: ['Everything in Pro', 'Multi-creator accounts', 'White-label invoices', 'Team access', 'Priority support', 'Custom branding'],
-    disabledFeatures: [],
-    featured: false,
+    detail: 'For managers across multiple creators.',
+    features: ['Multi-creator workspace', 'White-label invoices', 'Team workflow', 'Priority support'],
   },
 ]
 
-const dealCards = [
-  { brand: 'NordVPN', initials: 'NR', meta: 'YouTube Integration · Due Jun 3', amount: '$4,500', status: 'In Production', statusClass: 'bg-warning/15 text-warning' },
-  { brand: 'Squarespace', initials: 'SQ', meta: 'Newsletter · 3 issues', amount: '$2,200', status: 'Contracted', statusClass: 'bg-blue-500/15 text-blue-400' },
-  { brand: 'Athletic Greens', initials: 'AG', meta: 'Podcast · 2 episodes', amount: '$3,000', status: 'Invoiced', statusClass: 'bg-purple-500/15 text-purple-400' },
-  { brand: 'Hostinger', initials: 'HS', meta: 'YouTube Dedicated · Paid May 12', amount: '$5,000', status: 'Paid', statusClass: 'bg-success/15 text-success' },
+const trustPoints = [
+  { title: 'Read-only Gmail scan', icon: ShieldCheck },
+  { title: 'You approve imports', icon: Check },
+  { title: 'Payment deadlines visible', icon: CalendarClock },
 ]
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="inline-flex h-7 items-center rounded-full border border-border bg-brand-subtle px-3 text-xs font-semibold tracking-[0.06em] text-brand-text">
+      {children}
+    </div>
+  )
+}
+
+function StatusPill({
+  children,
+  tone,
+}: {
+  children: React.ReactNode
+  tone: (typeof actionRows)[number]['tone']
+}) {
+  const tones = {
+    brand: 'bg-brand-subtle text-brand-text',
+    warning: 'bg-warning-bg text-warning',
+    error: 'bg-error-bg text-error',
+  }
+
+  return <span className={`inline-flex h-5 items-center rounded-full px-2 text-xs font-semibold ${tones[tone]}`}>{children}</span>
+}
+
+function ColumnAccent({ tone }: { tone: (typeof dealColumns)[number]['tone'] }) {
+  const tones = {
+    negotiating: 'bg-[#6366F1]',
+    production: 'bg-warning',
+    invoiced: 'bg-[#A855F7]',
+    paid: 'bg-[#10B981]',
+  }
+
+  return <span className={`h-1.5 w-1.5 rounded-full ${tones[tone]}`} />
+}
+
+function WorkspaceMockup() {
+  return (
+    <div
+      role="img"
+      aria-label="EarnHQ workspace mockup showing sponsorship earnings, deal pipeline, Gmail imports, deadlines, and payment states."
+      className="overflow-hidden rounded-lg border border-border bg-background"
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-surface px-3 py-2 sm:px-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">
+            E
+          </div>
+          <div className="truncate text-sm font-semibold">Creator HQ</div>
+        </div>
+        <div className="hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
+          <span className="rounded-md bg-brand-subtle px-2 py-1 text-brand-text">Dashboard</span>
+          <span className="px-2 py-1">Deals</span>
+          <span className="px-2 py-1">Invoices</span>
+        </div>
+        <div className="inline-flex h-8 items-center rounded-md border border-border bg-brand-subtle px-2 text-xs font-semibold text-brand-text">
+          Review 4 imports
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-[108px_minmax(0,1fr)]">
+        <aside className="hidden border-r border-border bg-surface p-3 text-xs text-muted-foreground md:grid md:content-start md:gap-1">
+          {['Overview', 'Deals', 'Invoices', 'Payments', 'Rate card'].map((item, index) => (
+            <div
+              key={item}
+              className={`rounded-md px-2 py-2 ${index === 0 ? 'bg-brand-subtle font-semibold text-brand-text' : ''}`}
+            >
+              {item}
+            </div>
+          ))}
+        </aside>
+
+        <div className="min-w-0 p-3 sm:p-4">
+          <div className="grid gap-2 sm:grid-cols-4">
+            {[
+              ['Pipeline', '$24,500'],
+              ['Earned', '$18,200'],
+              ['Outstanding', '$6,300'],
+              ['Overdue', '2 invoices'],
+            ].map(([label, value], index) => (
+              <div key={label} className="rounded-lg border border-border bg-surface p-3">
+                <div className="text-xs font-semibold tracking-[0.06em] text-muted-foreground">{label}</div>
+                <div className={`mt-2 text-base font-semibold ${index === 3 ? 'text-error' : ''}`}>{value}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,1fr)_210px]">
+            <div className="rounded-lg border border-border bg-surface p-3">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <div className="text-sm font-semibold">Deal pipeline</div>
+                <div className="text-xs text-muted-foreground">7 active</div>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {dealColumns.slice(0, 2).map((column) => (
+                  <div key={column.title} className="min-w-0 rounded-md border border-border bg-background p-2">
+                    <div className="flex items-center gap-2 text-xs font-semibold">
+                      <ColumnAccent tone={column.tone} />
+                      {column.title}
+                    </div>
+                    <div className="mt-2 grid gap-2">
+                      {column.deals.map((deal, index) => (
+                        <div key={deal} className="min-w-0 overflow-hidden rounded-md border border-border bg-surface p-2">
+                          <div className="truncate text-xs font-semibold">{deal}</div>
+                          <div className="mt-1 flex min-w-0 items-center justify-between gap-1 text-[11px] text-muted-foreground">
+                            <span className="truncate">{index === 0 ? 'YouTube' : 'Instagram'}</span>
+                            <span className="shrink-0">{index === 0 ? '$3.5k' : '$1.2k'}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="rounded-lg border border-border bg-surface p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-sm font-semibold">Gmail import</div>
+                  <StatusPill tone="brand">Ready</StatusPill>
+                </div>
+                <div className="mt-3 rounded-md border border-border bg-background p-2">
+                  <div className="text-xs font-semibold">Apex Apparel</div>
+                  <div className="mt-1 text-[11px] leading-4 text-muted-foreground">60-sec integration, May 30</div>
+                </div>
+              </div>
+              <div className="rounded-lg border border-border bg-surface p-3">
+                <div className="text-sm font-semibold">Needs action</div>
+                <div className="mt-3 grid gap-2 text-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-muted-foreground">Invoice reminder</span>
+                    <span className="text-error">Overdue</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-muted-foreground">Draft deadline</span>
+                    <span className="text-warning">Tomorrow</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ImportToInvoiceMockup() {
+  return (
+    <div
+      role="img"
+      aria-label="EarnHQ mockup showing a sponsor email reviewed into extracted deal details and an invoice follow-up."
+      className="overflow-hidden rounded-lg border border-border bg-background"
+    >
+      <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3">
+        <div>
+          <div className="text-sm font-semibold">Review imported deal</div>
+          <div className="mt-1 text-xs text-muted-foreground">Nothing is saved until you confirm.</div>
+        </div>
+        <StatusPill tone="brand">Gmail</StatusPill>
+      </div>
+
+      <div className="grid gap-3 p-3 sm:p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+        <div className="rounded-lg border border-border bg-surface p-3">
+          <div className="flex items-start justify-between gap-3 border-b border-border pb-3">
+            <div>
+              <div className="text-xs text-muted-foreground">partnerships@apexapparel.com</div>
+              <div className="mt-1 text-sm font-semibold">Spring collection sponsorship</div>
+            </div>
+            <div className="text-xs text-muted-foreground">Today</div>
+          </div>
+          <div className="mt-3 rounded-md border border-border bg-background p-3 text-xs leading-5">
+            <p className="text-muted-foreground">Hey Sanat, we would love a YouTube integration for our launch.</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <div className="rounded-md bg-brand-subtle p-2 text-brand-text">Deliverable: 60-sec read</div>
+              <div className="rounded-md bg-warning-bg p-2 text-warning">Content due: May 30</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-3">
+          <div className="rounded-lg border border-border bg-surface p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold">Extracted deal</div>
+              <span className="text-xs text-muted-foreground">$3,500</span>
+            </div>
+            <div className="mt-3 grid gap-2 text-xs">
+              {[
+                ['Brand', 'Apex Apparel'],
+                ['Platform', 'YouTube integration'],
+                ['Status', 'Negotiating'],
+              ].map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[72px_minmax(0,1fr)] gap-2 rounded-md border border-border bg-background px-2 py-2">
+                  <span className="text-muted-foreground">{label}</span>
+                  <span className="truncate font-semibold">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-surface p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold">Invoice #1001</div>
+                <div className="mt-1 text-xs text-muted-foreground">Sent after go-live</div>
+              </div>
+              <StatusPill tone="error">Overdue</StatusPill>
+            </div>
+            <div className="mt-3 flex items-center justify-between rounded-md border border-border bg-background p-3">
+              <span className="text-sm font-semibold">$3,500</span>
+              <span className="text-xs text-brand-text">Send reminder</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-extrabold tracking-tight">
-            Earn<span className="text-primary">HQ</span>
+      <nav className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="text-xl font-semibold tracking-[-0.02em]">
+            Earn<span className="text-brand-text">HQ</span>
           </Link>
-          <div className="flex items-center gap-8">
-            <div className="hidden md:flex items-center gap-6">
-              <Link href="#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</Link>
-              <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-              <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-              <Link href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
-            </div>
-            <Link href="#cta" className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4">
-              Join waitlist →
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link
+              href="/login"
+              className="inline-flex h-11 items-center rounded-md px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-[color:var(--bg-overlay)] hover:text-foreground"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="#waitlist"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-hover"
+            >
+              Join waitlist
+              <ArrowRight className="size-4" strokeWidth={1.5} />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section id="hero" className="relative py-24 md:py-32 px-6 text-center overflow-hidden">
-        <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.12)_0%,transparent_70%)] pointer-events-none" />
-        <div className="max-w-4xl mx-auto relative">
-          <Badge variant="outline" className="mb-8 px-4 py-1.5 text-sm border-border bg-[#111111]">
-            <span className="w-2 h-2 rounded-full bg-success mr-2 shadow-[0_0_8px_theme(colors.success)]" />
-            Now accepting waitlist signups — <strong className="text-foreground ml-1">3 months free</strong>
-          </Badge>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6">
-            Stop managing brand deals<br />
-            <span className="text-primary">in your inbox.</span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-            EarnHQ connects to Gmail, automatically extracts your sponsorship deals using AI, and gives you a clean command center to manage deliverables, send invoices, and track payments — all in one place.
-          </p>
-
-          <div className="flex flex-wrap gap-3 justify-center mb-5 max-w-md mx-auto">
-            <WaitlistForm variant="inline" />
-          </div>
-          <p className="text-sm text-muted-foreground">
-            No credit card. <strong className="text-foreground">3 months of Pro free</strong> for waitlist members.
-          </p>
-
-          <div className="flex justify-center gap-12 mt-16 flex-wrap">
-            <div className="text-center">
-              <div className="text-3xl font-extrabold tracking-tight">5–15</div>
-              <div className="text-sm text-muted-foreground mt-1">deals managed per creator / month</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-extrabold tracking-tight">4 hrs</div>
-              <div className="text-sm text-muted-foreground mt-1">avg. admin time saved per week</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-extrabold tracking-tight">$0</div>
-              <div className="text-sm text-muted-foreground mt-1">to get started</div>
-            </div>
-          </div>
-
-          {/* Product Preview */}
-          <div className="mt-16 bg-[#111111] border border-border rounded-2xl overflow-hidden shadow-[0_0_0_1px_theme(colors.border),0_48px_80px_rgba(0,0,0,0.6)]">
-            <div className="bg-[#0D0D0D] border-b border-border p-3 flex items-center gap-3">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-error" />
-                <div className="w-2.5 h-2.5 rounded-full bg-warning" />
-                <div className="w-2.5 h-2.5 rounded-full bg-success" />
+      <main>
+        <section className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-center">
+            <div>
+              <SectionLabel>Creator sponsorship back-office</SectionLabel>
+              <h1 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.1] tracking-[-0.02em]">
+                Your brand deal command center.
+              </h1>
+              <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
+                EarnHQ connects sponsor emails, deal deadlines, invoices, and payments in one calm workspace for
+                creators managing 5 to 15 paid partnerships a month.
+              </p>
+              <div id="waitlist" className="mt-6 max-w-md scroll-mt-28">
+                <WaitlistForm variant="hero" />
               </div>
-              <div className="flex-1 bg-border rounded h-6 flex items-center px-3 text-xs text-muted-foreground max-w-[280px]">
-                app.earnhq.co/deals
-              </div>
-            </div>
-            <div className="grid md:grid-cols-[200px_1fr] min-h-[380px]">
-              <div className="hidden md:flex flex-col gap-1 p-5 border-r border-border">
-                {['Dashboard', 'Deals', 'Invoices', 'Payments', 'Rate Card'].map((item, i) => (
-                  <div
-                    key={item}
-                    className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm ${
-                      i === 0 ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground'
-                    }`}
-                  >
-                    {item}
+              <p className="mt-3 text-[13px] text-muted-foreground">No credit card. Join now for first access.</p>
+              <div className="mt-6 grid gap-2 sm:grid-cols-3">
+                {trustPoints.map(({ title, icon: Icon }) => (
+                  <div key={title} className="flex min-h-11 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-[13px] text-muted-foreground">
+                    <Icon className="size-4 shrink-0 text-brand-text" strokeWidth={1.5} />
+                    <span>{title}</span>
                   </div>
                 ))}
               </div>
-              <div className="p-5">
-                <div className="text-base font-bold mb-4">Active Deals</div>
-                <div className="space-y-2">
-                  {dealCards.map((deal) => (
-                    <div key={deal.brand} className="bg-background border border-border rounded-lg p-3 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
-                          {deal.initials}
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold">{deal.brand}</div>
-                          <div className="text-xs text-muted-foreground">{deal.meta}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-sm font-bold">{deal.amount}</div>
-                        <Badge variant="secondary" className={deal.statusClass}>
-                          {deal.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
+            </div>
+
+            <WorkspaceMockup />
+          </div>
+        </section>
+
+        <section className="border-y border-border bg-surface px-4 py-10 sm:px-6">
+          <div className="mx-auto grid max-w-[1200px] gap-5 md:grid-cols-3">
+            {valueCards.map(({ title, description, icon: Icon }) => (
+              <article key={title} className="rounded-lg border border-border bg-background p-4 sm:p-6">
+                <div className="flex size-10 items-center justify-center rounded-md border border-border bg-brand-subtle text-brand-text">
+                  <Icon className="size-5" strokeWidth={1.5} />
                 </div>
+                <h2 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:items-center">
+            <ImportToInvoiceMockup />
+
+            <div>
+              <SectionLabel>From inbox to paid</SectionLabel>
+              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                See the deal before it slips out of view.
+              </h2>
+              <p className="mt-3 text-base leading-7 text-muted-foreground">
+                EarnHQ is designed around the moments creators lose money: a sponsor email not imported, a deliverable
+                date missed, or an invoice that never gets followed up.
+              </p>
+              <div className="mt-6 overflow-hidden rounded-lg border border-border bg-surface">
+                {actionRows.map((row) => (
+                  <div key={row.brand} className="grid gap-2 border-b border-border p-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+                    <div>
+                      <div className="text-sm font-semibold">{row.brand}</div>
+                      <div className="mt-1 text-[13px] text-muted-foreground">{row.task}</div>
+                    </div>
+                    <div className="text-sm font-semibold">{row.value}</div>
+                    <StatusPill tone={row.tone}>{row.status}</StatusPill>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Problem */}
-      <section id="problem" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            The Problem
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-            Running brand deals is<br />a second job. Without the tools.
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            You&apos;re creative director, account manager, accountant, and project manager — all at once. Most creators manage 5–15 brand deals a month with nothing but their inbox and a spreadsheet.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-5 mt-14">
-            {problems.map((problem) => (
-              <Card key={problem.title} className="p-7 bg-[#111111] border-border relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-error to-transparent opacity-60" />
-                <span className="text-3xl mb-3 block">{problem.emoji}</span>
-                <h3 className="text-base font-bold mb-2">{problem.title}</h3>
-                <p className="text-[15px] text-muted-foreground leading-relaxed">{problem.desc}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how" className="py-24 px-6 bg-[#111111] border-y border-border">
-        <div className="max-w-6xl mx-auto text-center">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            How It Works
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-            From inbox chaos to<br />clean pipeline in minutes.
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Three steps and you&apos;re running. No manual entry, no spreadsheet migration.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-px bg-border mt-16 relative">
-            <div className="hidden md:block absolute top-9 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            {steps.map((step, i) => (
-              <div key={step.title} className="bg-background p-8 text-center md:text-left">
-                <div className="w-[72px] h-[72px] rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto md:mx-0 mb-6 text-2xl relative z-10">
-                  {step.emoji}
-                </div>
-                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
-                <p className="text-[15px] text-muted-foreground leading-relaxed mb-3">{step.desc}</p>
-                <Badge variant="outline" className="text-primary border-primary/25 bg-primary/10 text-xs">
-                  {step.detail}
-                </Badge>
+        <section className="border-y border-border bg-surface px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+              <div>
+                <SectionLabel>Product sneak peek</SectionLabel>
+                <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                  Open the dashboard and know what needs action.
+                </h2>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+                The workspace follows the product flow: review imported sponsorships, move deals through delivery,
+                generate invoices, and keep overdue payments visible until they are cleared.
+              </p>
+            </div>
 
-      {/* Features */}
-      <section id="features" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            Features
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-4">
-            Everything a solo creator<br />needs to run their deal business.
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            No bloat. No agency features you&apos;ll never use. Built for the creator running 5–15 deals a month on their own.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-px bg-border border border-border rounded-2xl overflow-hidden mt-14">
-            {features.map((feature) => (
-              <div key={feature.title} className="bg-[#111111] p-8 hover:bg-[#161616] transition-colors">
-                <div className="w-12 h-12 bg-primary/10 border border-primary/25 rounded-xl flex items-center justify-center mb-4 text-xl">
-                  {feature.emoji}
-                </div>
-                <h3 className="text-base font-bold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
+            <div className="mt-8 rounded-lg border border-border bg-background p-3 sm:p-4">
+              <div className="grid gap-3 border-b border-border pb-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  ['Pipeline', '$24,500'],
+                  ['Earned this month', '$18,200'],
+                  ['Outstanding', '$6,300'],
+                  ['Due this week', '4 deliverables'],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-border bg-surface p-4">
+                    <div className="text-xs font-semibold tracking-[0.06em] text-muted-foreground">{label}</div>
+                    <div className="mt-2 text-2xl font-semibold tracking-[-0.02em]">{value}</div>
+                  </div>
+                ))}
               </div>
-            ))}
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                {dealColumns.map((column) => (
+                  <div key={column.title} className="rounded-lg border border-border bg-surface p-3">
+                    <div className="flex items-center gap-2 border-b border-border pb-3 text-sm font-semibold">
+                      <ColumnAccent tone={column.tone} />
+                      {column.title}
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {column.deals.map((deal) => (
+                        <div key={deal} className="rounded-md border border-border bg-background p-3">
+                          <div className="text-sm font-semibold">{deal}</div>
+                          <div className="mt-1 text-[13px] text-muted-foreground">Sponsor deal</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Social Proof */}
-      <section className="py-24 px-6 bg-[#111111] border-y border-border">
-        <div className="max-w-6xl mx-auto text-center">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            Early Feedback
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-            What creators are saying.
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
-            {testimonials.map((t) => (
-              <Card key={t.name} className="p-6 bg-background border-border text-left">
-                <div className="text-warning text-sm mb-3">★★★★★</div>
-                <p className="text-[15px] leading-relaxed mb-5 italic">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${t.gradient} flex items-center justify-center text-sm font-bold text-white`}>
-                    {t.initials}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.handle}</div>
-                  </div>
-                </div>
-              </Card>
-            ))}
+        <section className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <SectionLabel>Built for creators</SectionLabel>
+              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                Less admin between the email and the payout.
+              </h2>
+              <p className="mt-3 text-base leading-7 text-muted-foreground">
+                Keep the business layer of sponsorships crisp without turning your creator workflow into an agency
+                tool.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { title: 'Deadline tracking', body: 'Deliverables and go-live dates stay close to the deal record.', icon: CalendarClock },
+                { title: 'Invoice generation', body: 'Professional invoice details come from the work already tracked.', icon: FileText },
+                { title: 'Payment focus', body: 'Sent, paid, and overdue states stay visible after content goes live.', icon: CircleDollarSign },
+                { title: 'Rate context', body: 'Default rates reduce repeated setup for your platforms and formats.', icon: Receipt },
+              ].map(({ title, body, icon: Icon }) => (
+                <article key={title} className="rounded-lg border border-border bg-surface p-4 sm:p-6">
+                  <Icon className="size-6 text-brand-text" strokeWidth={1.5} />
+                  <h3 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            Pricing
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Simple, creator-friendly pricing.
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Start free. Upgrade when you&apos;re ready. Waitlist members get 3 months of Pro free.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-5 mt-14 items-start">
-            {pricingPlans.map((plan) => (
-              <Card
-                key={plan.name}
-                className={`p-8 text-left relative ${
-                  plan.featured
-                    ? 'border-primary bg-gradient-to-b from-primary/5 to-[#111111]'
-                    : 'bg-[#111111] border-border'
-                }`}
-              >
-                {plan.featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Most Popular
-                  </div>
-                )}
-                <div className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                  {plan.name}
-                </div>
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-black tracking-tight">{plan.price}</span>
-                  <span className="text-sm text-muted-foreground">{plan.period}</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-6">{plan.desc}</p>
-                <hr className="border-border mb-6" />
-                <ul className="space-y-2.5 mb-7">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <span className="text-success font-bold">✓</span>
-                      {f}
-                    </li>
-                  ))}
-                  {plan.disabledFeatures.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                      <span>—</span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={plan.name === 'Agency' ? 'mailto:hello@earnhq.co' : '#cta'}
-                  className={cn(
-                    'inline-flex items-center justify-center rounded-md text-sm font-medium h-10 px-4 w-full',
-                    plan.featured
-                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                      : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
-                  )}
+        <section id="pricing" className="border-y border-border bg-surface px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="max-w-2xl">
+              <SectionLabel>Pricing</SectionLabel>
+              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                Start small. Upgrade when brand deals become a system.
+              </h2>
+            </div>
+            <div className="mt-8 grid gap-3 lg:grid-cols-3">
+              {pricingPlans.map((plan) => (
+                <article
+                  key={plan.name}
+                  className={`rounded-lg border p-4 sm:p-6 ${
+                    plan.featured ? 'border-border-strong bg-brand-subtle' : 'border-border bg-background'
+                  }`}
                 >
-                  {plan.name === 'Agency' ? 'Contact us' : 'Join waitlist — 3 months free →'}
-                </Link>
-              </Card>
-            ))}
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-base font-semibold">{plan.name}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{plan.detail}</p>
+                    </div>
+                    {plan.featured && <span className="rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">Pro</span>}
+                  </div>
+                  <div className="mt-6 text-4xl font-semibold tracking-[-0.02em]">
+                    {plan.price}
+                    <span className="ml-1 text-sm font-normal text-muted-foreground">/ month</span>
+                  </div>
+                  <ul className="mt-6 grid gap-2">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex gap-2 text-sm text-muted-foreground">
+                        <Check className="mt-0.5 size-4 shrink-0 text-brand-text" strokeWidth={1.5} />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={plan.name === 'Agency' ? 'mailto:hello@earnhq.co' : '#waitlist'}
+                    className={`mt-6 inline-flex h-11 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors ${
+                      plan.featured
+                        ? 'bg-primary text-primary-foreground hover:bg-brand-hover'
+                        : 'border border-border bg-subtle text-foreground hover:border-border-strong'
+                    }`}
+                  >
+                    {plan.name === 'Agency' ? 'Contact us' : 'Join waitlist'}
+                  </Link>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24 px-6 bg-[#111111] border-t border-border">
-        <div className="max-w-6xl mx-auto text-center">
-          <Badge variant="outline" className="mb-5 text-primary border-primary/30 bg-primary/10">
-            FAQ
-          </Badge>
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-            Common questions.
-          </h2>
-          <FAQ />
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section id="cta" className="py-28 px-6 text-center relative overflow-hidden border-t border-border">
-        <div className="absolute bottom-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1)_0%,transparent_70%)] pointer-events-none" />
-        <div className="max-w-2xl mx-auto relative">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-5">
-            Your brand deal business<br />deserves <span className="text-primary">better tools.</span>
-          </h2>
-          <p className="text-lg text-muted-foreground mb-10">
-            Join the waitlist today. Get 3 months of Pro free when we launch. No credit card required.
-          </p>
-          <div className="max-w-md mx-auto mb-4">
-            <WaitlistForm variant="inline" />
+        <section id="faq" className="px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto max-w-[1200px]">
+            <div className="text-center">
+              <SectionLabel>FAQ</SectionLabel>
+              <h2 className="mt-5 text-2xl font-semibold tracking-[-0.02em]">Questions creators ask before connecting.</h2>
+            </div>
+            <FAQ />
           </div>
-          <p className="text-sm text-muted-foreground">
-            Joining takes 10 seconds. Unsubscribe anytime.
-          </p>
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-center md:text-left">
-            <div className="font-extrabold">Earn<span className="text-primary">HQ</span></div>
-            <div className="text-sm text-muted-foreground">© 2026 EarnHQ. All rights reserved.</div>
+        <section className="border-t border-border bg-surface px-4 py-12 sm:px-6">
+          <div className="mx-auto grid max-w-[1200px] gap-6 rounded-lg border border-border bg-background p-4 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:items-center">
+            <div>
+              <SectionLabel>Waitlist</SectionLabel>
+              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                Put brand deal admin in one place.
+              </h2>
+              <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
+                Join the waitlist for EarnHQ launch access and a first look at the sponsorship back-office built for
+                solo creators.
+              </p>
+            </div>
+            <WaitlistForm variant="card" />
           </div>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-            <a href="mailto:hello@earnhq.co" className="hover:text-foreground transition-colors">Contact</a>
+        </section>
+      </main>
+
+      <footer className="border-t border-border px-4 py-8 sm:px-6">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="text-base font-semibold text-foreground">
+              Earn<span className="text-brand-text">HQ</span>
+            </div>
+            <div className="mt-1">Your brand deal command center.</div>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <Link href="/privacy" className="transition-colors hover:text-foreground">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-foreground">
+              Terms
+            </Link>
+            <a href="mailto:hello@earnhq.co" className="transition-colors hover:text-foreground">
+              Contact
+            </a>
           </div>
         </div>
       </footer>

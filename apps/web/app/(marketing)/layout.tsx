@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'EarnHQ — Your Brand Deal Command Center',
     description: 'The sponsorship back-office built for creators.',
-    images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',

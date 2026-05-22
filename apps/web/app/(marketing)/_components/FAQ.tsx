@@ -31,12 +31,12 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
-    <div className="max-w-3xl mx-auto mt-14 border border-border rounded-xl overflow-hidden">
+    <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-lg border border-border">
       {faqs.map((faq, index) => (
         <div key={index} className="bg-background">
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between gap-4 p-5 text-left font-semibold text-[15px] hover:bg-[#111111] transition-colors border-b border-border last:border-b-0"
+            className="flex min-h-11 w-full items-center justify-between gap-4 border-b border-border p-4 text-left text-sm font-semibold transition-colors duration-150 hover:bg-[color:var(--bg-overlay)] last:border-b-0 sm:p-5"
           >
             {faq.question}
             <ChevronDown
@@ -48,11 +48,11 @@ export function FAQ() {
           </button>
           <div
             className={cn(
-              'overflow-hidden transition-all duration-300',
+              'overflow-hidden transition-all duration-200',
               openIndex === index ? 'max-h-96' : 'max-h-0'
             )}
           >
-            <div className="px-5 pb-5 text-[15px] text-muted-foreground leading-relaxed border-b border-border last:border-b-0">
+            <div className="border-b border-border px-4 pb-4 text-sm leading-6 text-muted-foreground last:border-b-0 sm:px-5 sm:pb-5">
               {faq.answer}
             </div>
           </div>
