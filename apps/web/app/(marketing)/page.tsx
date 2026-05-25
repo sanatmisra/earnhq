@@ -24,7 +24,7 @@ type ValueCard = {
 const valueCards: ValueCard[] = [
   {
     title: 'Deals surfaced from Gmail',
-    description: 'Review likely sponsorship emails before EarnHQ saves the brand, value, platform, and deadline.',
+    description: 'Read-only OAuth — we never see your password. Review likely sponsorship emails before EarnHQ saves the brand, value, platform, and deadline.',
     icon: MailSearch,
   },
   {
@@ -356,6 +356,14 @@ export default function HomePage() {
                 <WaitlistForm variant="hero" />
               </div>
               <p className="mt-3 text-[13px] text-muted-foreground">Free to start. First 100 members get 3 months of Pro free.</p>
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                {trustPoints.map(({ title, icon: Icon }) => (
+                  <div key={title} className="flex items-center gap-1.5">
+                    <Icon className="size-3.5 text-brand-text" strokeWidth={1.5} />
+                    <span className="text-[13px] text-muted-foreground">{title}</span>
+                  </div>
+                ))}
+              </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
                 {[
                   { number: '5–15', label: 'deals/month supported' },
@@ -397,7 +405,7 @@ export default function HomePage() {
                 {
                   step: '01',
                   title: 'Connect Gmail',
-                  body: 'EarnHQ reads your inbox for sponsorship threads. You review each one before anything is saved.',
+                  body: "EarnHQ uses Google's official OAuth — read-only access, no password ever seen. We scan for sponsorship threads. You review each one before anything is saved.",
                   icon: '📧',
                 },
                 {
