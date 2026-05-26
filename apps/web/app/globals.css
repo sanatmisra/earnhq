@@ -214,3 +214,17 @@
     font-family: Urbanist, -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
+
+.marketing-bg {
+  background-color: var(--bg-base);
+  background-image: radial-gradient(circle, var(--dot-color, #C4C4D4) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+:root .marketing-bg {
+  --dot-color: #DDDDE8;
+}
+
+.dark .marketing-bg {
+  --dot-color: #1E1E24;
+}
