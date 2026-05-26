@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import {
   ArrowRight,
-  CalendarClock,
   Check,
   CircleDollarSign,
+  Clock,
   FileText,
   LayoutDashboard,
   MailSearch,
-  Receipt,
   ShieldCheck,
   type LucideIcon,
 } from 'lucide-react'
@@ -16,27 +15,73 @@ import { WaitlistForm } from './_components/WaitlistForm'
 import { FadeIn } from '@/components/marketing/FadeIn'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
-type ValueCard = {
+type Feature = {
+  icon: LucideIcon
   title: string
   description: string
-  icon: LucideIcon
+  bullets: string[]
 }
 
-const valueCards: ValueCard[] = [
+const features: Feature[] = [
   {
-    title: 'Deals surfaced from Gmail',
-    description: 'Read-only OAuth — we never see your password. Review likely sponsorship emails before EarnHQ saves the brand, value, platform, and deadline.',
     icon: MailSearch,
+    title: 'Gmail AI extraction',
+    description: 'Your inbox becomes your deal intake — no manual entry.',
+    bullets: [
+      'AI scans for sponsorship emails automatically',
+      'Review each deal before anything is saved',
+      'Read-only OAuth — we never see your password',
+    ],
   },
   {
-    title: 'One command center',
-    description: 'See negotiating, contracted, live, invoiced, and paid work without rebuilding a spreadsheet.',
     icon: LayoutDashboard,
+    title: 'Live deal pipeline',
+    description: 'Every deal, every stage, always current.',
+    bullets: [
+      'Kanban board from negotiating to paid',
+      'Brand, platform, amount, and deadlines in one card',
+      'Filter and sort across all active deals instantly',
+    ],
   },
   {
-    title: 'Invoices ready fast',
-    description: 'Turn deal data into a professional invoice and keep payment state tied to the work.',
-    icon: Receipt,
+    icon: Clock,
+    title: 'Approval loop tracker',
+    description: 'Know exactly when a brand has gone too quiet.',
+    bullets: [
+      'Mark content as submitted for brand review',
+      'Tracks business days elapsed since submission',
+      'Alerts you when it\'s time to follow up — no awkward guessing',
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Exclusivity window alerts',
+    description: 'Never accidentally sign a conflicting deal again.',
+    bullets: [
+      'Log the exclusivity category and end date per contract',
+      'Get a 14-day warning before any window expires',
+      'Active exclusivity shown on every deal card',
+    ],
+  },
+  {
+    icon: FileText,
+    title: 'One-click invoices',
+    description: 'Professional invoices that build themselves from your deal data.',
+    bullets: [
+      'Rate, brand name, and deliverables pre-filled',
+      'PDF generated and sent via email in seconds',
+      'Tracks draft, sent, paid, and overdue states',
+    ],
+  },
+  {
+    icon: CircleDollarSign,
+    title: 'Payment tracking',
+    description: 'Every dollar owed, visible in one place.',
+    bullets: [
+      'Outstanding, overdue, and paid — always current',
+      'Automatic overdue alerts tell you exactly when to follow up',
+      'Full pipeline value and YTD earnings on your dashboard',
+    ],
   },
 ]
 
@@ -71,31 +116,42 @@ const dealColumns = [
 
 const pricingPlans = [
   {
-    name: 'Free',
-    price: '$0',
-    detail: 'For setting up your first deal workflow.',
-    features: ['3 active deals', 'Manual deal entry', 'Basic dashboard'],
-  },
-  {
     name: 'Pro',
-    price: '$29',
-    detail: 'For solo creators running deals every month.',
-    features: ['Unlimited deals', 'Gmail sync', 'Invoices and payment tracking', 'Rate card and alerts'],
+    price: '$49',
+    annualNote: '$39/mo billed annually — save $120/yr',
+    detail: 'For solo creators running 5–15 brand deals a month.',
+    features: [
+      'Unlimited active deals',
+      'Gmail AI extraction + deal import',
+      'Full pipeline (kanban + table view)',
+      'Approval loop tracker',
+      'Exclusivity window alerts',
+      'One-click invoices with PDF',
+      'Payment tracking + overdue alerts',
+      'Rate card',
+    ],
     featured: true,
+    cta: 'Start free 14-day trial',
+    ctaHref: '#waitlist',
   },
   {
     name: 'Agency',
-    price: '$99',
-    detail: 'For managers across multiple creators.',
-    features: ['Multi-creator workspace', 'White-label invoices', 'Team workflow', 'Priority support'],
+    price: '$129',
+    annualNote: '$99/mo billed annually — save $360/yr',
+    detail: 'For talent managers running deals across multiple creators.',
+    features: [
+      'Everything in Pro',
+      'Up to 5 creator profiles',
+      'White-label invoices with your branding',
+      'Team member access (3 seats)',
+      'Priority email support',
+    ],
+    featured: false,
+    cta: 'Contact us',
+    ctaHref: 'mailto:hello@earnhq.co',
   },
 ]
 
-const trustPoints = [
-  { title: 'Read-only Gmail scan', icon: ShieldCheck },
-  { title: 'You approve imports', icon: Check },
-  { title: 'Payment deadlines visible', icon: CalendarClock },
-]
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -343,51 +399,21 @@ export default function HomePage() {
             <div>
               <SectionLabel>Creator sponsorship back-office</SectionLabel>
               <h1 className="mt-5 max-w-xl text-4xl font-semibold leading-[1.1] tracking-[-0.02em]">
-                Stop losing money between the email and the payout.
+                Stop losing brand deals between your inbox and your bank account.
               </h1>
-              <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                EarnHQ pulls sponsorship deals from your Gmail, tracks every deadline, generates invoices, and tells you who hasn&apos;t paid. Built for creators running 5–15 brand deals a month.
+              <p className="mt-4 max-w-md text-base leading-7 text-muted-foreground">
+                Connect Gmail once. EarnHQ extracts your deals, tracks every stage, and tells you exactly when and who to follow up with.
               </p>
-              <div id="waitlist" className="mt-6 max-w-md scroll-mt-28">
+              <div id="waitlist" className="mt-8 max-w-md scroll-mt-28">
                 <WaitlistForm variant="hero" />
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="inline-flex h-6 items-center gap-1.5 rounded-full border border-brand-subtle bg-brand-subtle px-3 text-xs font-semibold text-brand-text">
                   <span className="size-1.5 rounded-full bg-brand-text" />
-                  First 100 members — 3 months Pro free
+                  First 100 members — 2 months Pro free
                 </span>
                 <span className="text-[13px] text-muted-foreground">Free to start. No card required.</span>
               </div>
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-                {trustPoints.map(({ title, icon: Icon }) => (
-                  <div key={title} className="flex items-center gap-1.5">
-                    <Icon className="size-3.5 text-brand-text" strokeWidth={1.5} />
-                    <span className="text-[13px] text-muted-foreground">{title}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-                {[
-                  { number: '5–15', label: 'deals/month supported' },
-                  { number: '$0', label: 'to start tracking' },
-                  { number: '< 2 min', label: 'to create an invoice' },
-                ].map(({ number, label }) => (
-                  <div key={label} className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold tracking-[-0.02em] text-foreground">{number}</span>
-                    <span className="text-sm text-muted-foreground">{label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <blockquote className="mt-6 border-l-2 border-brand pl-4">
-                <p className="text-sm leading-6 text-muted-foreground italic">
-                  &ldquo;The invoice flow alone saves me 20 minutes per deal. And I never forget to follow up on overdue payments anymore.&rdquo;
-                </p>
-                <cite className="mt-2 flex items-center gap-2 text-xs text-muted-foreground not-italic">
-                  <span className="inline-flex size-5 items-center justify-center rounded-full bg-brand-subtle text-[10px] font-bold text-brand-text">P</span>
-                  Priya M. · @priyareviews · 190k Instagram
-                </cite>
-              </blockquote>
             </div>
 
             <div className="relative">
@@ -479,19 +505,40 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="border-y border-border bg-surface px-4 py-10 sm:px-6">
-          <div className="mx-auto grid max-w-[1200px] gap-5 md:grid-cols-3">
-            {valueCards.map(({ title, description, icon: Icon }, i) => (
-              <FadeIn key={title} delay={i * 80} className="h-full">
-                <article className="rounded-lg border border-border bg-background p-4 sm:p-6 h-full">
-                  <div className="flex size-10 items-center justify-center rounded-md border border-border bg-brand-subtle text-brand-text">
-                    <Icon className="size-5" strokeWidth={1.5} />
-                  </div>
-                  <h2 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-                </article>
-              </FadeIn>
-            ))}
+        <section className="px-4 sm:px-6">
+          <div className="mx-auto max-w-[1200px] bg-background px-6 py-12 sm:py-16 rounded-xl">
+            <FadeIn>
+              <div className="mb-10">
+                <SectionLabel>Everything included</SectionLabel>
+                <h2 className="mt-5 max-w-xl text-2xl font-semibold tracking-[-0.02em]">
+                  Every part of a brand deal, handled.
+                </h2>
+                <p className="mt-3 max-w-xl text-base text-muted-foreground">
+                  From the first email to the final payment — EarnHQ covers every step most creators currently do manually, across six different apps.
+                </p>
+              </div>
+            </FadeIn>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map(({ icon: Icon, title, description, bullets }, i) => (
+                <FadeIn key={title} delay={i * 60} className="h-full">
+                  <article className="rounded-lg border border-border bg-surface p-5 h-full">
+                    <div className="flex size-10 items-center justify-center rounded-md border border-border bg-brand-subtle text-brand-text">
+                      <Icon className="size-5" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+                    <ul className="mt-3 grid gap-1.5">
+                      {bullets.map((bullet) => (
+                        <li key={bullet} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="mt-[7px] size-1 shrink-0 rounded-full bg-brand-text" />
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -631,37 +678,6 @@ export default function HomePage() {
         </section>
 
         <section className="px-4 sm:px-6">
-          <div className="mx-auto grid max-w-[1200px] gap-8 bg-background px-6 py-12 sm:py-16 rounded-xl lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <SectionLabel>Built for creators</SectionLabel>
-              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
-                Less admin between the email and the payout.
-              </h2>
-              <p className="mt-3 text-base leading-7 text-muted-foreground">
-                Keep the business layer of sponsorships crisp without turning your creator workflow into an agency
-                tool.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                { title: 'Deadline tracking', body: 'Deliverables and go-live dates stay close to the deal record.', icon: CalendarClock },
-                { title: 'Invoice generation', body: 'Professional invoice details come from the work already tracked.', icon: FileText },
-                { title: 'Payment focus', body: 'Sent, paid, and overdue states stay visible after content goes live.', icon: CircleDollarSign },
-                { title: 'Rate context', body: 'Default rates reduce repeated setup for your platforms and formats.', icon: Receipt },
-              ].map(({ title, body, icon: Icon }, i) => (
-                <FadeIn key={title} delay={i * 80} className="h-full">
-                  <article className="rounded-lg border border-border bg-surface p-4 sm:p-6 h-full">
-                    <Icon className="size-6 text-brand-text" strokeWidth={1.5} />
-                    <h3 className="mt-4 text-base font-semibold tracking-[-0.01em]">{title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
-                  </article>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="px-4 sm:px-6">
           <div className="mx-auto max-w-[1200px] bg-background px-6 py-10 rounded-xl">
             <FadeIn>
               <div className="grid gap-4 sm:grid-cols-3">
@@ -709,53 +725,99 @@ export default function HomePage() {
 
         <section id="pricing" className="border-y border-border bg-surface px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-[1200px]">
-            <div className="max-w-2xl">
-              <SectionLabel>Pricing</SectionLabel>
-              <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
-                Start small. Upgrade when brand deals become a system.
-              </h2>
+            {/* Introductory offer banner */}
+            <FadeIn>
+              <div className="mb-10 rounded-xl border border-brand/30 bg-brand-subtle px-5 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex items-center gap-3 flex-1">
+                  <span className="text-xl">🎁</span>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      Introductory offer — first 100 waitlist members get 2 months of Pro free
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      No credit card required. Join the waitlist, get early access, and your first 2 months are on us.
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="#waitlist"
+                  className="shrink-0 inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-brand-hover"
+                >
+                  Claim offer <ArrowRight className="size-3.5" strokeWidth={1.5} />
+                </Link>
+              </div>
+            </FadeIn>
+
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+              <div>
+                <SectionLabel>Pricing</SectionLabel>
+                <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
+                  Simple pricing. No artificial limits.
+                </h2>
+                <p className="mt-3 text-base leading-7 text-muted-foreground">
+                  One plan for solo creators, one for agencies. No feature gating, no upgrade prompts mid-deal.
+                </p>
+              </div>
             </div>
-            <div className="mt-8 grid gap-3 lg:grid-cols-3">
+
+            <div className="grid gap-4 sm:grid-cols-2 max-w-3xl">
               {pricingPlans.map((plan, i) => (
                 <FadeIn key={plan.name} delay={i * 100} className="h-full">
-                <article
-                  className={`rounded-lg border p-4 sm:p-6 h-full ${
-                    plan.featured ? 'border-border-strong bg-brand-subtle' : 'border-border bg-background'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
+                  <article
+                    className={`relative rounded-xl border p-6 h-full flex flex-col ${
+                      plan.featured
+                        ? 'border-brand/40 bg-background shadow-sm'
+                        : 'border-border bg-background'
+                    }`}
+                  >
+                    {plan.featured && (
+                      <div className="absolute -top-3 left-6">
+                        <span className="inline-flex h-6 items-center rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground">
+                          Most popular
+                        </span>
+                      </div>
+                    )}
                     <div>
                       <h3 className="text-base font-semibold">{plan.name}</h3>
                       <p className="mt-1 text-sm text-muted-foreground">{plan.detail}</p>
                     </div>
-                    {plan.featured && <span className="rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">Pro</span>}
-                  </div>
-                  <div className="mt-6 text-4xl font-semibold tracking-[-0.02em]">
-                    {plan.price}
-                    <span className="ml-1 text-sm font-normal text-muted-foreground">/ month</span>
-                  </div>
-                  <ul className="mt-6 grid gap-2">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex gap-2 text-sm text-muted-foreground">
-                        <Check className="mt-0.5 size-4 shrink-0 text-brand-text" strokeWidth={1.5} />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={plan.name === 'Agency' ? 'mailto:hello@earnhq.co' : '#waitlist'}
-                    className={`mt-6 inline-flex h-11 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors ${
-                      plan.featured
-                        ? 'bg-primary text-primary-foreground hover:bg-brand-hover'
-                        : 'border border-border bg-subtle text-foreground hover:border-border-strong'
-                    }`}
-                  >
-                    {plan.name === 'Agency' ? 'Contact us' : 'Get early access'}
-                  </Link>
-                </article>
+                    <div className="mt-5 pb-5 border-b border-border">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-semibold tracking-[-0.02em]">{plan.price}</span>
+                        <span className="text-sm text-muted-foreground">/ month</span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">{plan.annualNote}</p>
+                    </div>
+                    <ul className="mt-5 grid gap-2.5 flex-1">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex gap-2 text-sm text-muted-foreground">
+                          <Check className="mt-0.5 size-4 shrink-0 text-brand-text" strokeWidth={1.5} />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href={plan.ctaHref}
+                      className={`mt-6 inline-flex h-11 w-full items-center justify-center rounded-md px-4 text-sm font-semibold transition-colors ${
+                        plan.featured
+                          ? 'bg-primary text-primary-foreground hover:bg-brand-hover'
+                          : 'border border-border bg-surface text-foreground hover:border-border-strong'
+                      }`}
+                    >
+                      {plan.cta}
+                    </Link>
+                    {plan.featured && (
+                      <p className="mt-3 text-center text-xs text-muted-foreground">
+                        First 100 waitlist members get 2 months free
+                      </p>
+                    )}
+                  </article>
                 </FadeIn>
               ))}
             </div>
+            <p className="mt-5 text-xs text-muted-foreground">
+              No credit card required. Cancel any time.
+            </p>
           </div>
         </section>
 
@@ -777,7 +839,7 @@ export default function HomePage() {
                 Stop chasing payments.<br className="hidden sm:block" /> Start using EarnHQ.
               </h2>
               <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
-                Join the waitlist for early access. First 100 members get 3 months of Pro completely free — no card required, no catch.
+                Join the waitlist for early access. First 100 members get 2 months of Pro completely free — no card required, no catch.
               </p>
             </div>
             <WaitlistForm variant="card" />
