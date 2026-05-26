@@ -98,7 +98,7 @@ export function StatsBar({ stats, isLoading = false }: StatsBarProps) {
       {statCards.map((stat) => (
         <Card
           key={stat.label}
-          className="p-4 bg-[#111111] border-[#222222] hover:border-[#333333] transition-colors"
+          className="p-4 bg-surface border-border hover:border-border-strong transition-colors"
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">{stat.label}</span>

@@ -48,7 +48,7 @@ function KanbanColumn({ status, label, deals, color }: KanbanColumnProps) {
     <div
       ref={setNodeRef}
       className={`flex flex-col min-w-[280px] max-w-[280px] ${
-        isOver ? 'bg-[#1A1A1A]' : ''
+        isOver ? 'bg-surface' : ''
       } rounded-lg transition-colors`}
     >
       <div className="flex items-center justify-between px-3 py-2 mb-2">
@@ -58,7 +58,7 @@ function KanbanColumn({ status, label, deals, color }: KanbanColumnProps) {
             style={{ backgroundColor: color }}
           />
           <span className="text-sm font-medium">{label}</span>
-          <span className="text-xs text-muted-foreground bg-[#222222] px-1.5 py-0.5 rounded">
+          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
             {deals.length}
           </span>
         </div>

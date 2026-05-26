@@ -1,6 +1,7 @@
 'use client'
 
 import { Bell, User } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -23,6 +24,7 @@ export function TopNav() {
         <Badge variant="secondary" className="bg-primary/10 text-primary">
           Free Plan
         </Badge>
+        <ThemeToggle />
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
           <span className="sr-only">Notifications</span>

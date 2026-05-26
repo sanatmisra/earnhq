@@ -51,12 +51,12 @@ export function DealCard({ deal, isDragging }: DealCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`p-3 bg-[#0D0D0D] border-[#1E1E1E] cursor-grab active:cursor-grabbing hover:border-[#333333] transition-all ${
+      className={`p-3 bg-background border-border cursor-grab active:cursor-grabbing hover:border-border-strong transition-all ${
         isDragging ? 'opacity-50 shadow-lg scale-105' : ''
       }`}
     >
       <div className="flex items-start gap-2 mb-2">
-        <div className="h-8 w-8 rounded bg-[#1A1A1A] flex items-center justify-center overflow-hidden flex-shrink-0">
+        <div className="h-8 w-8 rounded bg-surface flex items-center justify-center overflow-hidden flex-shrink-0">
           <img
             src={getBrandLogoUrl(deal.brand_name)}
             alt=""

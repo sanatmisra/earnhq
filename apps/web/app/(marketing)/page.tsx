@@ -14,6 +14,7 @@ import {
 import { FAQ } from './_components/FAQ'
 import { WaitlistForm } from './_components/WaitlistForm'
 import { FadeIn } from '@/components/marketing/FadeIn'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 type ValueCard = {
   title: string
@@ -324,12 +325,7 @@ export default function HomePage() {
             Earn<span className="text-brand-text">HQ</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link
-              href="/login"
-              className="inline-flex h-11 items-center rounded-md px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-[color:var(--bg-overlay)] hover:text-foreground"
-            >
-              Sign in
-            </Link>
+            <ThemeToggle />
             <Link
               href="#waitlist"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-hover"
@@ -355,7 +351,13 @@ export default function HomePage() {
               <div id="waitlist" className="mt-6 max-w-md scroll-mt-28">
                 <WaitlistForm variant="hero" />
               </div>
-              <p className="mt-3 text-[13px] text-muted-foreground">Free to start. First 100 members get 3 months of Pro free.</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="inline-flex h-6 items-center gap-1.5 rounded-full border border-brand-subtle bg-brand-subtle px-3 text-xs font-semibold text-brand-text">
+                  <span className="size-1.5 rounded-full bg-brand-text" />
+                  First 100 members — 3 months Pro free
+                </span>
+                <span className="text-[13px] text-muted-foreground">Free to start. No card required.</span>
+              </div>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
                 {trustPoints.map(({ title, icon: Icon }) => (
                   <div key={title} className="flex items-center gap-1.5">
@@ -376,6 +378,16 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
+
+              <blockquote className="mt-6 border-l-2 border-brand pl-4">
+                <p className="text-sm leading-6 text-muted-foreground italic">
+                  &ldquo;The invoice flow alone saves me 20 minutes per deal. And I never forget to follow up on overdue payments anymore.&rdquo;
+                </p>
+                <cite className="mt-2 flex items-center gap-2 text-xs text-muted-foreground not-italic">
+                  <span className="inline-flex size-5 items-center justify-center rounded-full bg-brand-subtle text-[10px] font-bold text-brand-text">P</span>
+                  Priya M. · @priyareviews · 190k Instagram
+                </cite>
+              </blockquote>
             </div>
 
             <div className="relative">
@@ -386,6 +398,37 @@ export default function HomePage() {
               />
               <WorkspaceMockup />
             </div>
+          </div>
+        </section>
+
+        <section className="border-y border-border bg-surface px-4 py-10 sm:px-6">
+          <div className="mx-auto max-w-[1200px]">
+            <FadeIn>
+              <p className="mb-6 text-center text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                Sound familiar?
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {[
+                  {
+                    pain: '"I\'ll track that in a spreadsheet."',
+                    reality: 'Three weeks later you\'re reconciling five tabs and still not sure which invoice you already sent.',
+                  },
+                  {
+                    pain: '"The brand said they\'ll pay soon."',
+                    reality: 'Net-60 quietly became net-90. You have no record of when you last followed up or what was agreed.',
+                  },
+                  {
+                    pain: '"I just need to remember the exclusivity date."',
+                    reality: 'You don\'t. You sign a competing deal. The first brand is not happy.',
+                  },
+                ].map(({ pain, reality }) => (
+                  <div key={pain} className="rounded-lg border border-border bg-background p-4 sm:p-5">
+                    <p className="text-sm font-semibold">{pain}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{reality}</p>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -449,6 +492,57 @@ export default function HomePage() {
                 </article>
               </FadeIn>
             ))}
+          </div>
+        </section>
+
+        <section className="px-4 pb-12 sm:px-6 sm:pb-16">
+          <div className="mx-auto max-w-[1200px]">
+            <FadeIn>
+              <div className="overflow-hidden rounded-xl border border-border">
+                <div className="grid divide-y border-border sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                  <div className="bg-surface p-5 sm:p-6">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                      Without EarnHQ
+                    </p>
+                    <div className="grid gap-2.5">
+                      {[
+                        'Brand email buried — deal slips through untracked',
+                        'Spreadsheet with 6 tabs, always out of date',
+                        'Invoice built manually in Google Docs, once you remember',
+                        'Payment chased over WhatsApp, awkwardly',
+                        'Exclusivity window forgotten — you sign the wrong deal',
+                        '45+ minutes of admin per deal',
+                      ].map((item) => (
+                        <div key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-error" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="bg-background p-5 sm:p-6">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.08em] text-brand-text">
+                      With EarnHQ
+                    </p>
+                    <div className="grid gap-2.5">
+                      {[
+                        'Gmail AI surfaces the deal before you even open it',
+                        'One pipeline — all deals, all stages, always live',
+                        'Invoice generated in one click from deal data',
+                        'Overdue alerts remind you exactly when to follow up',
+                        'Exclusivity windows tracked with 14-day expiry alerts',
+                        'Under 2 minutes of admin per deal',
+                      ].map((item) => (
+                        <div key={item} className="flex items-start gap-2 text-sm text-foreground">
+                          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-success" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -680,11 +774,10 @@ export default function HomePage() {
             <div>
               <SectionLabel>Waitlist</SectionLabel>
               <h2 className="mt-5 text-2xl font-semibold leading-tight tracking-[-0.02em]">
-                Put brand deal admin in one place.
+                Stop chasing payments.<br className="hidden sm:block" /> Start using EarnHQ.
               </h2>
               <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
-                Join the waitlist for EarnHQ launch access and a first look at the sponsorship back-office built for
-                solo creators.
+                Join the waitlist for early access. First 100 members get 3 months of Pro completely free — no card required, no catch.
               </p>
             </div>
             <WaitlistForm variant="card" />
