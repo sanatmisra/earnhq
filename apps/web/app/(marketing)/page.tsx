@@ -144,7 +144,7 @@ function WorkspaceMockup() {
           <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">
             E
           </div>
-          <div className="truncate text-sm font-semibold">Creator HQ</div>
+          <div className="truncate text-sm font-semibold">EarnHQ</div>
         </div>
         <div className="hidden items-center gap-1 text-xs text-muted-foreground sm:flex">
           <span className="rounded-md bg-brand-subtle px-2 py-1 text-brand-text">Dashboard</span>
