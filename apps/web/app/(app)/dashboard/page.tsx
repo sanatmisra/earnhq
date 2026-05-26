@@ -6,6 +6,8 @@ import { StatsBar } from '@/components/dashboard/StatsBar'
 import { DealKanban } from '@/components/deals/DealKanban'
 import { DealTable } from '@/components/deals/DealTable'
 import { UpcomingDeadlines } from '@/components/dashboard/UpcomingDeadlines'
+import { ApprovalAlerts } from '@/components/dashboard/ApprovalAlerts'
+import { ExclusivityAlerts } from '@/components/dashboard/ExclusivityAlerts'
 import { NewDealModal } from '@/components/deals/NewDealModal'
 import { GmailConnectButton } from '@/components/integrations/GmailConnectButton'
 import { Button } from '@/components/ui/button'
@@ -170,8 +172,10 @@ function DashboardContent() {
           )}
         </div>
 
-        <div className="w-72 flex-shrink-0 hidden xl:block">
+        <div className="w-72 flex-shrink-0 hidden xl:block space-y-4">
+          <ApprovalAlerts deals={deals} />
           <UpcomingDeadlines deals={deals} isLoading={isLoading} />
+          <ExclusivityAlerts deals={deals} />
         </div>
       </div>
 

@@ -108,11 +108,18 @@ export interface Deal {
   deadline: string | null
   live_date: string | null
   payment_due_date: string | null
+  // Approval loop
+  content_submitted_at: string | null
+  approval_threshold_days: number
   // Deliverables
   deliverables: Deliverable[]
   // Communication
   gmail_thread_id: string | null
   notes: string | null
+  // Exclusivity
+  exclusivity_enabled: boolean
+  exclusivity_category: string | null
+  exclusivity_ends_at: string | null
   // Metadata
   created_at: string
   updated_at: string

@@ -192,6 +192,18 @@ export function DealTable({
           ) : (
             sortedDeals.map((deal) => {
               const PlatformIcon = platformIcons[deal.platform]
+              const today = new Date()
+              today.setHours(0, 0, 0, 0)
+              const hasActiveExclusivity =
+                deal.exclusivity_enabled &&
+                deal.exclusivity_ends_at &&
+                new Date(deal.exclusivity_ends_at) >= today
+              const exclusivityDaysLeft = hasActiveExclusivity
+                ? Math.ceil(
+                    (new Date(deal.exclusivity_ends_at!).getTime() - today.getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  )
+                : null
               return (
                 <TableRow
                   key={deal.id}
@@ -214,6 +226,18 @@ export function DealTable({
                         </span>
                       </div>
                       <span className="font-medium">{deal.brand_name}</span>
+                      {hasActiveExclusivity && (
+                        <span
+                          title={`Exclusivity: ${deal.exclusivity_category ?? 'active'} — expires ${deal.exclusivity_ends_at}`}
+                          className={`inline-flex h-5 items-center rounded-full px-2 text-[11px] font-semibold ${
+                            exclusivityDaysLeft !== null && exclusivityDaysLeft <= 14
+                              ? 'bg-warning/10 text-warning'
+                              : 'bg-error/10 text-error'
+                          }`}
+                        >
+                          🔒 {exclusivityDaysLeft === 0 ? 'Today' : `${exclusivityDaysLeft}d`}
+                        </span>
+                      )}
                     </Link>
                   </TableCell>
                   <TableCell>
