@@ -217,14 +217,14 @@
 
 .marketing-bg {
   background-color: var(--bg-base);
-  background-image: radial-gradient(circle, var(--dot-color, #C4C4D4) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-image: radial-gradient(circle, var(--dot-color) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
 }
 
 :root .marketing-bg {
-  --dot-color: #DDDDE8;
+  --dot-color: #C8C8D8;
 }
 
 .dark .marketing-bg {
-  --dot-color: #1E1E24;
+  --dot-color: #2A2A35;
 }

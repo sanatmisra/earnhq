@@ -318,9 +318,7 @@ function ImportToInvoiceMockup() {
 
 export default function HomePage() {
   return (
-    <div className="marketing-bg min-h-screen text-foreground relative">
-      {/* Fade dot grid out toward bottom of hero */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-transparent to-background" aria-hidden="true" />
+    <div className="marketing-bg min-h-screen text-foreground">
       <nav className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6">
           <Link href="/" className="text-xl font-semibold tracking-[-0.02em]">
