@@ -338,7 +338,7 @@ export default function HomePage() {
       </nav>
 
       <main>
-        <section className="px-4 py-12 sm:px-6 sm:py-16">
+        <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-center">
             <div>
               <SectionLabel>Creator sponsorship back-office</SectionLabel>
@@ -432,7 +432,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 py-12 sm:px-6 sm:py-16">
+        <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-[1200px]">
             <FadeIn>
               <div className="text-center mb-10">
@@ -495,7 +495,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 pb-12 sm:px-6 sm:pb-16">
+        <section className="bg-background px-4 pb-12 sm:px-6 sm:pb-16">
           <div className="mx-auto max-w-[1200px]">
             <FadeIn>
               <div className="overflow-hidden rounded-xl border border-border">
@@ -546,7 +546,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 py-12 sm:px-6 sm:py-16">
+        <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:items-center">
             <FadeIn>
               <ImportToInvoiceMockup />
@@ -630,7 +630,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 py-12 sm:px-6 sm:py-16">
+        <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <SectionLabel>Built for creators</SectionLabel>
@@ -661,7 +661,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="px-4 py-10 sm:px-6">
+        <section className="bg-background px-4 py-10 sm:px-6">
           <div className="mx-auto max-w-[1200px]">
             <FadeIn>
               <div className="grid gap-4 sm:grid-cols-3">
@@ -759,7 +759,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="faq" className="px-4 py-12 sm:px-6 sm:py-16">
+        <section id="faq" className="bg-background px-4 py-12 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-[1200px]">
             <div className="text-center">
               <SectionLabel>FAQ</SectionLabel>
@@ -785,7 +785,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-border px-4 py-8 sm:px-6">
+      <footer className="border-t border-border bg-background px-4 py-8 sm:px-6">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-base font-semibold text-foreground">
