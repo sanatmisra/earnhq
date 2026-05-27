@@ -822,7 +822,7 @@ export default function HomePage() {
                     >
                       {plan.cta}
                     </Link>
-                    {plan.featured && (
+                    {plan.name !== 'Agency' && (
                       <p className="mt-3 text-center text-xs text-muted-foreground">
                         First 100 waitlist members get 2 months free
                       </p>
