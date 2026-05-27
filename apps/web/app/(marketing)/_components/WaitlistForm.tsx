@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowRight, CircleCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +13,13 @@ export function WaitlistForm({ variant = 'inline' }: WaitlistFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [position, setPosition] = useState<number | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const [plan, setPlan] = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.replace(/^#waitlist\??/, ''))
+    const p = params.get('plan')
+    if (p) setPlan(p)
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -24,7 +31,7 @@ export function WaitlistForm({ variant = 'inline' }: WaitlistFormProps) {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, creator_type: plan ?? undefined }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -84,6 +91,11 @@ export function WaitlistForm({ variant = 'inline' }: WaitlistFormProps) {
         {status === 'loading' ? 'Joining...' : 'Join waitlist'}
         {status !== 'loading' && <ArrowRight className="size-4" strokeWidth={1.5} />}
       </button>
+      {plan && (
+        <p className="text-[13px] text-muted-foreground sm:col-span-2">
+          Signing up for <span className="font-semibold capitalize text-foreground">{plan}</span> plan interest.
+        </p>
+      )}
       {status === 'error' && (
         <p className="text-[13px] text-error sm:col-span-2" role="alert">
           {errorMsg}

@@ -129,7 +129,7 @@ const pricingPlans = [
     ],
     featured: false,
     cta: 'Join the waitlist',
-    ctaHref: '#waitlist',
+    ctaHref: '#waitlist?plan=starter',
   },
   {
     name: 'Pro',
@@ -148,7 +148,7 @@ const pricingPlans = [
     ],
     featured: true,
     cta: 'Join the waitlist',
-    ctaHref: '#waitlist',
+    ctaHref: '#waitlist?plan=pro',
   },
   {
     name: 'Agency',
