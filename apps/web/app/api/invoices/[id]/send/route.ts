@@ -84,7 +84,7 @@ export async function POST(
   // Send email via Resend
   const creatorName = profile.company_name ?? profile.full_name ?? profile.email ?? 'Creator'
   const { error: emailError } = await resend.emails.send({
-    from: `${creatorName} via EarnHQ <invoices@earnhq.com>`,
+    from: 'EarnHQ <onboarding@resend.dev>',
     to: [invoice.client_email],
     subject: `Invoice ${invoice.invoice_number} from ${creatorName} — ${new Intl.NumberFormat('en-US', { style: 'currency', currency: invoice.currency }).format(invoice.total)}`,
     html: buildInvoiceEmailHtml({

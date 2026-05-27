@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY)
     await resend.emails.send({
-      from: 'EarnHQ <hello@earnhq.com>',
+      from: 'EarnHQ <onboarding@resend.dev>',
       to: email,
       subject: "You're on the EarnHQ waitlist 🎉",
       html: `

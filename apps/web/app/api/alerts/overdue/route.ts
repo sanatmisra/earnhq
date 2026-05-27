@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       .join('\n')
 
     const { error: emailErr } = await resend.emails.send({
-      from: 'EarnHQ Alerts <alerts@earnhq.com>',
+      from: 'EarnHQ <onboarding@resend.dev>',
       to: [profile.email],
       subject: `⚠️ ${userInvoices.length} overdue invoice${userInvoices.length > 1 ? 's' : ''} — ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(total)} outstanding`,
       html: `

@@ -116,6 +116,22 @@ const dealColumns = [
 
 const pricingPlans = [
   {
+    name: 'Starter',
+    price: '$19',
+    annualNote: '$15/mo billed annually — save $48/yr',
+    detail: 'For creators landing their first consistent deals.',
+    features: [
+      'Up to 10 active deals',
+      'Manual deal entry',
+      'Pipeline kanban + table view',
+      'One-click invoices with PDF',
+      'Payment tracking + overdue alerts',
+    ],
+    featured: false,
+    cta: 'Join the waitlist',
+    ctaHref: '#waitlist',
+  },
+  {
     name: 'Pro',
     price: '$49',
     annualNote: '$39/mo billed annually — save $120/yr',
@@ -131,7 +147,7 @@ const pricingPlans = [
       'Rate card',
     ],
     featured: true,
-    cta: 'Start free 14-day trial',
+    cta: 'Join the waitlist',
     ctaHref: '#waitlist',
   },
   {
@@ -760,7 +776,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 max-w-3xl">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {pricingPlans.map((plan, i) => (
                 <FadeIn key={plan.name} delay={i * 100} className="h-full">
                   <article
